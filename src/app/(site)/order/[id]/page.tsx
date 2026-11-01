@@ -48,7 +48,7 @@ export default function OrderPage() {
   const pct = cancelled ? 0 : (Math.max(0, idx) / (flow.length - 1)) * 100;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-24 pt-28 sm:px-8 sm:pt-36">
+    <div className="mx-auto max-w-5xl px-4 pb-24 pt-20 sm:px-8 lg:pt-24">
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }} className={cn("grid size-16 place-items-center rounded-full text-white", cancelled ? "bg-red-500" : "bg-emerald-500")}>
         {cancelled ? <XCircle className="size-8" /> : <Check className="size-8" strokeWidth={3} />}
       </motion.div>

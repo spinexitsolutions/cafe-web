@@ -229,7 +229,7 @@ export const useDB = create<Store>()(
         })),
     }),
     {
-      name: "aura-db-v2",
+      name: "aura-db-v3",
       ...guardedStorage(),
       skipHydration: true,
       partialize: (s) => {
@@ -254,6 +254,6 @@ export function snapshot(): DB {
 /** Sync across tabs: when admin edits in one tab, the storefront in another updates live. */
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (e) => {
-    if (e.key === "aura-db-v2") useDB.persist.rehydrate();
+    if (e.key === "aura-db-v3") useDB.persist.rehydrate();
   });
 }

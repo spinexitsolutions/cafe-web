@@ -266,7 +266,7 @@ export interface OpeningHour {
   closed: boolean;
 }
 
-export type DisplayFont = "bricolage" | "funnel" | "unbounded";
+export type DisplayFont = "archivo" | "bricolage" | "unbounded";
 
 export interface HeroSlide {
   id: ID;

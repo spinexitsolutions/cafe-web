@@ -59,7 +59,7 @@ export default function EventPage() {
           </div>
           <p className="mt-2 text-sm text-muted">{e.booked} people are going</p>
         </div>
-        <aside className="rounded-card bg-surface p-6 ring-1 ring-line lg:sticky lg:top-28 lg:self-start">
+        <aside className="rounded-card bg-surface p-6 ring-1 ring-line lg:sticky lg:top-20 lg:self-start">
           {state === "done" ? (
             <div className="py-8 text-center">
               <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="mx-auto grid size-14 place-items-center rounded-full bg-emerald-500 text-white"><Check className="size-7" /></motion.span>

@@ -99,11 +99,11 @@ export function ProductSheet() {
     <AnimatePresence>
       {p && (
         <>
-          <motion.div className="fixed inset-0 z-[70] bg-ink/45 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={hide} />
+          <motion.div className="fixed inset-0 z-[90] bg-ink/45 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={hide} />
           <motion.div
             role="dialog"
             aria-label={p.name}
-            className="fixed inset-x-0 bottom-0 z-[71] mx-auto flex max-h-[94dvh] max-w-2xl flex-col overflow-hidden rounded-t-[32px] bg-bg sm:bottom-6 sm:rounded-[32px]"
+            className="fixed inset-x-0 bottom-0 z-[91] mx-auto flex max-h-[94dvh] max-w-2xl flex-col overflow-hidden rounded-t-[32px] bg-bg sm:bottom-6 sm:rounded-[32px]"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}

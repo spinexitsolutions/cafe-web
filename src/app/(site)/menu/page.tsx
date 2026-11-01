@@ -71,7 +71,7 @@ export default function MenuPage() {
     <>
       <PageHero eyebrow={`The menu · ${status || "Today"}`} title="Made to" italic="order." intro="Everything is prepared the moment you order — coffee pulled, toast buttered, cakes sliced. Pick up in minutes or get it delivered warm." />
 
-      <div className="sticky top-[4.75rem] z-30 sm:top-[5.25rem]">
+      <div className="sticky top-2 z-30 lg:top-20">
         <div className="mx-auto max-w-7xl px-3 sm:px-8">
           <div className="flex flex-col gap-2 rounded-[26px] bg-bg/90 backdrop-blur-xl p-1.5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.2)] ring-1 ring-line md:flex-row md:items-center">
             <div ref={tabsRef} className="flex gap-1 overflow-x-auto no-scrollbar">
@@ -132,7 +132,7 @@ export default function MenuPage() {
                 <h2 className="display text-4xl sm:text-6xl">{c.name}</h2>
                 <span className="eyebrow text-muted">{items.length} items</span>
               </div>
-              <motion.div layout className="mt-6 grid gap-3 md:grid-cols-2">
+              <motion.div layout className="mt-2 grid md:grid-cols-2 md:gap-x-14">
                 <AnimatePresence mode="popLayout">
                   {items.map((p) => (
                     <MenuRow key={p.id} p={p} />

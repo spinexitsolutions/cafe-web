@@ -4,14 +4,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Sparkles, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useCart } from "@/store/cart";
 import { useDB } from "@/store/db";
 
 /** A floating, dismissible announcement capsule (CMS-controlled). */
 export function AnnouncementBar() {
   const a = useDB((s) => s.settings.announcement);
   const hydrated = useDB((s) => s.hydrated);
-  const hasItems = useCart((s) => s.items.length > 0);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -40,7 +38,7 @@ export function AnnouncementBar() {
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 40, opacity: 0, scale: 0.96 }}
           transition={{ type: "spring", stiffness: 260, damping: 26 }}
-          className={`fixed left-3 right-3 z-30 sm:left-5 sm:right-auto sm:max-w-md ${hasItems ? "bottom-[5.25rem] sm:bottom-5" : "bottom-[max(0.75rem,env(safe-area-inset-bottom))] sm:bottom-5"}`}
+          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-3 right-3 z-30 sm:right-auto sm:max-w-md lg:bottom-5 lg:left-[96px]"
         >
           <div className="flex items-center gap-3 rounded-[22px] bg-surface p-2 pr-2 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.25)] ring-1 ring-line">
             <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent">

@@ -5,8 +5,8 @@ import { useDB } from "@/store/db";
 import { useCart } from "@/store/cart";
 
 const FONT_VAR = {
+  archivo: "var(--font-archivo)",
   bricolage: "var(--font-bricolage)",
-  funnel: "var(--font-funnel-display)",
   unbounded: "var(--font-unbounded)",
 } as const;
 
@@ -20,7 +20,7 @@ function ThemeApplier() {
     r.setProperty("--ink", theme.ink);
     r.setProperty("--surface", theme.surface);
     r.setProperty("--radius", `${theme.radius}px`);
-    r.setProperty("--font-display-active", FONT_VAR[theme.displayFont] ?? FONT_VAR.bricolage);
+    r.setProperty("--font-display-active", FONT_VAR[theme.displayFont] ?? FONT_VAR.archivo);
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme.background);
   }, [theme]);
   return null;

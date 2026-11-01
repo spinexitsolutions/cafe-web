@@ -1,333 +1,373 @@
 "use client";
 
-import { AnimatePresence, LayoutGroup, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { ArrowUpRight, Check, Clock, MapPin, Phone, ShoppingBag, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, CalendarDays, Coffee, House, LayoutGrid, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { img, IMG } from "@/lib/seed";
 import { cn, openStatus } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { useDB } from "@/store/db";
+import { RollText } from "../motion/Kit";
 import { lockScroll } from "./SmoothScroll";
 
-const spring = { type: "spring", stiffness: 380, damping: 34, mass: 0.9 } as const;
+const WIPE = [0.76, 0, 0.24, 1] as const;
 
 const PREVIEWS: Record<string, string> = {
-  "/menu": img(IMG.flatWhite, 700),
-  "/shop": img(IMG.coffeeBag, 700),
-  "/reserve": img(IMG.interiorPlants, 700),
-  "/events": img(IMG.cupsCircle, 700),
-  "/journal": img(IMG.pourOver, 700),
-  "/about": img(IMG.counter, 700),
-  "/contact": img(IMG.streetCafe, 700),
-  "/account": img(IMG.cheers, 700),
+  "/": img(IMG.interiorBar, 900),
+  "/menu": img(IMG.flatWhite, 900),
+  "/shop": img(IMG.coffeeBag, 900),
+  "/reserve": img(IMG.interiorPlants, 900),
+  "/events": img(IMG.cupsCircle, 900),
+  "/journal": img(IMG.pourOver, 900),
+  "/about": img(IMG.counter, 900),
+  "/contact": img(IMG.streetCafe, 900),
+  "/account": img(IMG.cheers, 900),
 };
 
-export function Logo({ name, className }: { name: string; className?: string }) {
+function useStatus() {
+  const hours = useDB((s) => s.settings.site.hours);
+  const [st, setSt] = useState<{ open: boolean; label: string } | null>(null);
+  useEffect(() => setSt(openStatus(hours)), [hours]);
+  return st;
+}
+
+const isActive = (pathname: string, href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+
+/* ---------------------------------------------------------------- Overlay */
+
+function Overlay({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const nav = useDB((s) => s.settings.nav);
+  const site = useDB((s) => s.settings.site);
+  const pathname = usePathname();
+  const status = useStatus();
+  const [hover, setHover] = useState<string | null>(null);
+  const links = [{ id: "home", label: "Home", href: "/" }, ...nav.links, { id: "acc", label: "Account", href: "/account" }];
+  const preview = PREVIEWS[hover ?? pathname] ?? PREVIEWS["/"];
+
   return (
-    <span className={cn("display flex items-baseline text-[1.6rem] leading-none !tracking-[-0.06em]", className)}>
-      {name}
-      <span className="ml-0.5 inline-block size-1.5 rounded-full bg-accent" />
-    </span>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="overlay"
+          className="fixed inset-0 z-[80] flex bg-ink text-bg"
+          initial={{ clipPath: "inset(0 100% 0 0)" }}
+          animate={{ clipPath: "inset(0 0% 0 0)" }}
+          exit={{ clipPath: "inset(0 0 0 100%)" }}
+          transition={{ duration: 0.9, ease: WIPE }}
+        >
+          <div className="flex min-w-0 flex-1 flex-col overflow-y-auto px-5 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 sm:px-10 lg:pb-8 lg:pl-[calc(76px+3rem)]" data-lenis-prevent>
+            <div className="flex items-center justify-between">
+              <span className="text-[13px] font-semibold text-bg/50">({String(links.length).padStart(2, "0")}) Index</span>
+              <button onClick={onClose} className="group flex items-center gap-2 rounded-full bg-bg/10 py-2 pl-4 pr-2 text-sm font-semibold transition hover:bg-accent">
+                <RollText>Close</RollText>
+                <span className="grid size-8 place-items-center rounded-full bg-bg text-ink">
+                  <X className="size-4" />
+                </span>
+              </button>
+            </div>
+
+            <ul className="mt-8 flex-1" onMouseLeave={() => setHover(null)}>
+              {links.map((l, i) => (
+                <li key={l.id} className="overflow-hidden border-b border-bg/10">
+                  <motion.div
+                    initial={{ y: "100%" }}
+                    animate={{ y: "0%" }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.35 + i * 0.045 }}
+                  >
+                    <Link
+                      href={l.href}
+                      onClick={onClose}
+                      onMouseEnter={() => setHover(l.href)}
+                      className="group flex items-center gap-4 py-2 sm:py-2.5"
+                    >
+                      <span className="w-8 text-[12px] font-semibold tabular-nums text-bg/40">{String(i + 1).padStart(2, "0")}</span>
+                      <span
+                        className={cn(
+                          "display text-[clamp(2rem,7.5vw,4.6rem)] uppercase leading-none transition-colors duration-300",
+                          isActive(pathname, l.href) ? "text-accent" : "group-hover:text-accent",
+                        )}
+                      >
+                        <RollText>{l.label}</RollText>
+                      </span>
+                      <ArrowUpRight className="ml-auto size-6 -translate-x-3 opacity-0 transition duration-500 group-hover:translate-x-0 group-hover:opacity-100" />
+                    </Link>
+                  </motion.div>
+                </li>
+              ))}
+            </ul>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-8 grid gap-4 text-sm text-bg/70 sm:grid-cols-3"
+            >
+              <div>
+                <p className="text-[12px] font-semibold text-bg/40">Now</p>
+                <p className="mt-1 flex items-center gap-2">
+                  <span className={cn("size-2 rounded-full", status?.open ? "bg-emerald-400" : "bg-bg/30")} />
+                  {status?.label}
+                </p>
+              </div>
+              <div>
+                <p className="text-[12px] font-semibold text-bg/40">Visit</p>
+                <p className="mt-1">
+                  {site.address}, {site.city}
+                </p>
+              </div>
+              <div>
+                <p className="text-[12px] font-semibold text-bg/40">Talk</p>
+                <a href={`tel:${site.phone}`} className="mt-1 block hover:text-bg">
+                  {site.phone}
+                </a>
+                <a href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noreferrer" className="block hover:text-bg">
+                  @{site.instagram}
+                </a>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="relative hidden w-[38%] overflow-hidden lg:block">
+            <AnimatePresence initial={false}>
+              <motion.img
+                key={preview}
+                src={preview}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+                initial={{ clipPath: "inset(100% 0 0 0)", scale: 1.2 }}
+                animate={{ clipPath: "inset(0% 0 0 0)", scale: 1 }}
+                transition={{ duration: 0.9, ease: WIPE }}
+              />
+            </AnimatePresence>
+            <p className="vtext absolute bottom-8 left-6 text-[12px] font-semibold uppercase tracking-[0.3em] text-white mix-blend-difference">
+              {site.tagline}
+            </p>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
-/**
- * The "Island" — a floating, morphing navigation capsule.
- * It compacts on scroll, expands into a full menu, and briefly
- * becomes a live notification whenever something is added to the bag.
- */
+/* ---------------------------------------------------------- Added toast */
+
+function AddedToast() {
+  const lastAdded = useCart((s) => s.lastAdded);
+  const setOpen = useCart((s) => s.setOpen);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (!lastAdded || Date.now() - lastAdded.at > 1500) return;
+    setShow(true);
+    const t = setTimeout(() => setShow(false), 2800);
+    return () => clearTimeout(t);
+  }, [lastAdded]);
+
+  return (
+    <AnimatePresence>
+      {show && lastAdded && (
+        <motion.div
+          initial={{ y: 30, opacity: 0, scale: 0.96 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 20, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          className="fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[65] flex items-center gap-3 rounded-[14px] bg-ink p-2 pr-2 text-bg shadow-2xl sm:left-auto sm:right-5 sm:w-[360px] lg:bottom-5"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={lastAdded.image} alt="" className="size-12 rounded-[10px] object-cover" />
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-semibold text-accent">Added to bag</p>
+            <p className="truncate text-sm font-semibold">
+              {lastAdded.qty > 1 ? `${lastAdded.qty} × ` : ""}
+              {lastAdded.name}
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setShow(false);
+              setOpen(true);
+            }}
+            className="h-10 rounded-[10px] bg-accent px-4 text-sm font-semibold text-white"
+          >
+            View
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ------------------------------------------------------------- Bag count */
+
+function BagCount({ className }: { className?: string }) {
+  const count = useCart((s) => s.items.reduce((a, b) => a + b.qty, 0));
+  return (
+    <AnimatePresence>
+      {count > 0 && (
+        <motion.span
+          key={count}
+          initial={{ scale: 0, rotate: -30 }}
+          animate={{ scale: 1, rotate: 0 }}
+          exit={{ scale: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 18 }}
+          className={cn("grid min-w-[19px] place-items-center rounded-full bg-accent px-1 text-[10px] font-bold leading-[19px] text-white", className)}
+        >
+          {count}
+        </motion.span>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ------------------------------------------------------------------ Nav */
+
 export function Navbar() {
   const pathname = usePathname();
   const nav = useDB((s) => s.settings.nav);
   const site = useDB((s) => s.settings.site);
-  const count = useCart((s) => s.items.reduce((a, b) => a + b.qty, 0));
-  const lastAdded = useCart((s) => s.lastAdded);
-  const setOpen = useCart((s) => s.setOpen);
+  const setBag = useCart((s) => s.setOpen);
+  const status = useStatus();
+  const [open, setOpen] = useState(false);
 
-  const [expanded, setExpanded] = useState(false);
-  const [compact, setCompact] = useState(false);
-  const [notify, setNotify] = useState(false);
-  const [hovered, setHovered] = useState<string | null>(null);
-  const [status, setStatus] = useState<{ open: boolean; label: string } | null>(null);
-
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (y) => {
-    const prev = scrollY.getPrevious() ?? 0;
-    if (y < 80) setCompact(false);
-    else if (y > prev + 4) setCompact(true);
-    else if (y < prev - 8) setCompact(false);
-  });
-
-  useEffect(() => setStatus(openStatus(site.hours)), [site.hours]);
-  useEffect(() => setExpanded(false), [pathname]);
+  useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
-    lockScroll(expanded);
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setExpanded(false);
+    lockScroll(open);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [expanded]);
+  }, [open]);
 
-  useEffect(() => {
-    if (!lastAdded || Date.now() - lastAdded.at > 1500) return;
-    setNotify(true);
-    const t = setTimeout(() => setNotify(false), 2600);
-    return () => clearTimeout(t);
-  }, [lastAdded]);
-
-  const mode: "expanded" | "notify" | "compact" | "full" = expanded ? "expanded" : notify ? "notify" : compact ? "compact" : "full";
-  const preview = useMemo(() => PREVIEWS[hovered ?? ""] ?? img(IMG.interiorBar, 700), [hovered]);
+  const railLinks = nav.links.slice(0, 5);
+  const tabs = [
+    { href: "/", label: "Home", icon: House },
+    { href: "/menu", label: "Menu", icon: Coffee },
+    { href: "#bag", label: "Bag", icon: ShoppingBag },
+    { href: "/reserve", label: "Reserve", icon: CalendarDays },
+    { href: "#more", label: "More", icon: LayoutGrid },
+  ];
 
   return (
     <>
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            key="scrim"
-            className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setExpanded(false)}
-          />
-        )}
-      </AnimatePresence>
+      {/* ---------- Desktop: vertical rail ---------- */}
+      <motion.aside
+        initial={{ x: -80 }}
+        animate={{ x: 0 }}
+        transition={{ duration: 1, ease: WIPE, delay: 0.2 }}
+        className="fixed inset-y-0 left-0 z-[85] hidden w-[76px] flex-col items-center justify-between border-r border-ink/10 bg-bg py-5 lg:flex"
+      >
+        <Link href="/" aria-label="Home" className="group flex flex-col items-center gap-3">
+          <span className="grid size-11 place-items-center rounded-[12px] bg-accent text-white transition-transform duration-500 group-hover:rotate-[-8deg]">
+            <span className="display text-xl leading-none">{site.shortName.charAt(0).toUpperCase()}</span>
+          </span>
+          <span className="vtext display text-[15px] uppercase tracking-[0.06em]">{site.shortName}®</span>
+        </Link>
 
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
-        <LayoutGroup>
-          <motion.nav
-            layout
-            transition={spring}
-            style={{ borderRadius: mode === "expanded" ? 32 : 999 }}
-            className={cn(
-              "glass-dark pointer-events-auto relative overflow-hidden text-bg shadow-[0_20px_60px_-15px_rgba(0,0,0,0.45)] ring-1 ring-white/10",
-              mode === "expanded" ? "w-full max-w-[920px]" : "w-auto",
-            )}
-            aria-label="Main"
+        <nav aria-label="Main" className="flex flex-col items-center gap-1">
+          <button
+            onClick={() => setOpen(true)}
+            className="group mb-5 grid size-11 place-items-center rounded-full ring-1 ring-ink/15 transition hover:bg-ink hover:text-bg"
+            aria-label="Open menu"
           >
-            <AnimatePresence mode="popLayout" initial={false}>
-              {mode === "expanded" ? (
-                <motion.div
-                  key="expanded"
-                  initial={{ opacity: 0, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)", transition: { delay: 0.12, duration: 0.35 } }}
-                  exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 0.15 } }}
-                  className="max-h-[calc(100dvh-1.5rem)] overflow-y-auto p-3 sm:p-4"
-                >
-                  <div className="flex items-center justify-between pl-3">
-                    <Link href="/" onClick={() => setExpanded(false)}>
-                      <Logo name={site.shortName} />
-                    </Link>
-                    <button
-                      onClick={() => setExpanded(false)}
-                      className="grid size-11 place-items-center rounded-full bg-white/10 transition hover:bg-white/20"
-                      aria-label="Close menu"
-                    >
-                      <X className="size-5" />
-                    </button>
-                  </div>
+            <span className="flex w-4 flex-col gap-[4px]">
+              <span className="h-[2px] rounded bg-current transition-all duration-500 group-hover:w-2" />
+              <span className="h-[2px] rounded bg-current" />
+              <span className="ml-auto h-[2px] w-2 rounded bg-current transition-all duration-500 group-hover:w-4" />
+            </span>
+          </button>
+          {railLinks.map((l) => {
+            const active = isActive(pathname, l.href);
+            return (
+              <Link key={l.id} href={l.href} className={cn("group relative px-3 py-3 text-[13px] font-semibold transition-colors", active ? "text-accent" : "text-ink/60 hover:text-ink")}>
+                {active && <motion.span layoutId="rail-active" className="absolute -left-px top-2 bottom-2 w-[3px] rounded-r bg-accent" transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
+                <span className="vtext block transition-[letter-spacing] duration-500 group-hover:tracking-[0.12em]">{l.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-                  <div className="mt-4 grid gap-4 md:grid-cols-[1.25fr_1fr]">
-                    <ul className="px-2 sm:px-3" onMouseLeave={() => setHovered(null)}>
-                      {[{ id: "home", label: "Home", href: "/" }, ...nav.links, { id: "acc", label: "Account", href: "/account" }].map((l, i) => (
-                        <motion.li
-                          key={l.id}
-                          initial={{ opacity: 0, y: 24 }}
-                          animate={{ opacity: 1, y: 0, transition: { delay: 0.12 + i * 0.04, duration: 0.6, ease: [0.22, 1, 0.36, 1] } }}
-                          className="border-b border-white/10 last:border-0"
-                        >
-                          <Link
-                            href={l.href}
-                            onMouseEnter={() => setHovered(l.href)}
-                            onClick={() => setExpanded(false)}
-                            className="group flex items-baseline gap-4 py-2.5 sm:py-3"
-                          >
-                            <span className="eyebrow plain w-6 text-white/40">{String(i + 1).padStart(2, "0")}</span>
-                            <span
-                              className={cn(
-                                "display text-[2.4rem] leading-none transition-all duration-500 sm:text-5xl",
-                                pathname === l.href ? "text-accent" : "group-hover:translate-x-2 group-hover:text-accent",
-                              )}
-                            >
-                              {l.label}
-                            </span>
-                            <ArrowUpRight className="ml-auto size-5 -translate-x-2 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100" />
-                          </Link>
-                        </motion.li>
-                      ))}
-                    </ul>
+        <div className="flex flex-col items-center gap-4">
+          <span className="vtext flex items-center gap-2 text-[11px] font-semibold text-ink/50">
+            <span className={cn("size-1.5 rounded-full", status?.open ? "bg-emerald-500" : "bg-ink/30")} />
+            {status?.label}
+          </span>
+          <button onClick={() => setBag(true)} className="relative grid size-11 place-items-center rounded-full bg-ink text-bg transition hover:bg-accent" aria-label="Open bag">
+            <ShoppingBag className="size-[18px]" />
+            <BagCount className="absolute -right-1 -top-1" />
+          </button>
+        </div>
+      </motion.aside>
 
-                    <div className="hidden flex-col gap-3 md:flex">
-                      <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
-                        <AnimatePresence mode="popLayout">
-                          <motion.img
-                            key={preview}
-                            src={preview}
-                            alt=""
-                            initial={{ opacity: 0, scale: 1.08 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                            className="absolute inset-0 h-full w-full object-cover"
-                          />
-                        </AnimatePresence>
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5">
-                          <p className="eyebrow text-white/70">Today</p>
-                          <p className="display mt-1 text-2xl">{site.tagline}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+      {/* Desktop: order CTA, top-right */}
+      <motion.div
+        initial={{ y: -40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.9, ease: WIPE, delay: 0.5 }}
+        className="fixed right-5 top-5 z-[60] hidden lg:block"
+      >
+        <Link href={nav.ctaHref} className="group flex h-11 items-center gap-2 rounded-full bg-accent pl-5 pr-1.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.35)]">
+          <RollText>{nav.ctaLabel}</RollText>
+          <span className="grid size-8 place-items-center rounded-full bg-white/20 transition-transform duration-500 group-hover:rotate-45">
+            <ArrowUpRight className="size-4" />
+          </span>
+        </Link>
+      </motion.div>
 
-                  <div className="mt-3 grid gap-2 rounded-3xl bg-white/5 p-4 text-sm text-white/75 sm:grid-cols-3">
-                    <span className="flex items-center gap-2">
-                      <Clock className="size-4 text-accent" /> {status?.label ?? "—"}
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <MapPin className="size-4 text-accent" /> {site.address}
-                    </span>
-                    <a href={`tel:${site.phone}`} className="flex items-center gap-2 hover:text-white">
-                      <Phone className="size-4 text-accent" /> {site.phone}
-                    </a>
-                  </div>
-                </motion.div>
-              ) : mode === "notify" && lastAdded ? (
-                <motion.div
-                  key="notify"
-                  initial={{ opacity: 0, scale: 0.9, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)", transition: { delay: 0.08 } }}
-                  exit={{ opacity: 0, scale: 0.9, filter: "blur(6px)", transition: { duration: 0.12 } }}
-                  className="flex items-center gap-3 py-2 pl-2 pr-2"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={lastAdded.image} alt="" className="size-10 rounded-full object-cover" />
-                  <div className="min-w-0 pr-2">
-                    <p className="flex items-center gap-1.5 text-[11px] text-white/60">
-                      <span className="grid size-3.5 place-items-center rounded-full bg-emerald-500">
-                        <Check className="size-2.5" strokeWidth={4} />
-                      </span>
-                      Added to bag
-                    </p>
-                    <p className="max-w-[46vw] truncate text-sm font-medium sm:max-w-[16rem]">
-                      {lastAdded.qty > 1 ? `${lastAdded.qty} × ` : ""}
-                      {lastAdded.name}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setNotify(false);
-                      setOpen(true);
-                    }}
-                    className="rounded-full bg-bg px-4 py-2 text-sm font-medium text-ink transition hover:bg-white"
-                  >
-                    View bag
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="bar"
-                  initial={{ opacity: 0, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)", transition: { delay: 0.06 } }}
-                  exit={{ opacity: 0, filter: "blur(6px)", transition: { duration: 0.1 } }}
-                  className="flex h-14 items-center gap-1 pl-5 pr-1.5"
-                >
-                  <motion.div layout="position">
-                    <Link href="/" aria-label="Home">
-                      <Logo name={site.shortName} />
-                    </Link>
-                  </motion.div>
-
-                  {mode === "full" && (
-                    <ul className="ml-4 hidden items-center lg:flex" onMouseLeave={() => setHovered(null)}>
-                      {nav.links.slice(0, 6).map((l) => (
-                        <li key={l.id} className="relative">
-                          <Link
-                            href={l.href}
-                            onMouseEnter={() => setHovered(l.href)}
-                            className={cn(
-                              "relative z-10 block px-3.5 py-2 text-[13px] font-medium transition-colors",
-                              pathname.startsWith(l.href) ? "text-bg" : "text-white/65 hover:text-white",
-                            )}
-                          >
-                            {l.label}
-                          </Link>
-                          {(hovered === l.href || (!hovered && pathname.startsWith(l.href))) && (
-                            <motion.span
-                              layoutId="nav-hover"
-                              className="absolute inset-0 rounded-full bg-white/12"
-                              transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                            />
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {(mode === "compact" || mode === "full") && status && (
-                    <span
-                      className={cn(
-                        "ml-3 items-center gap-2 rounded-full bg-white/8 px-3 py-1.5 text-[11px] text-white/75",
-                        mode === "compact" ? "hidden sm:flex" : "hidden sm:flex lg:hidden",
-                      )}
-                    >
-                      <span className="relative flex size-1.5">
-                        {status.open && <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400" />}
-                        <span className={cn("relative size-1.5 rounded-full", status.open ? "bg-emerald-400" : "bg-white/40")} />
-                      </span>
-                      {status.label}
-                    </span>
-                  )}
-
-                  <div className="ml-3 flex items-center gap-1">
-                    <button
-                      onClick={() => setOpen(true)}
-                      className="relative grid size-11 place-items-center rounded-full transition hover:bg-white/10"
-                      aria-label={`Open bag, ${count} items`}
-                    >
-                      <ShoppingBag className="size-[18px]" />
-                      <AnimatePresence>
-                        {count > 0 && (
-                          <motion.span
-                            key={count}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            className="absolute right-1.5 top-1.5 grid min-w-[18px] place-items-center rounded-full bg-accent px-1 text-[10px] font-semibold leading-[18px] text-white"
-                          >
-                            {count}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </button>
-                    {mode === "full" && (
-                      <Link
-                        href={nav.ctaHref}
-                        className="hidden rounded-full bg-bg px-4 py-2.5 text-[13px] font-medium text-ink transition hover:bg-white lg:block"
-                      >
-                        {nav.ctaLabel}
-                      </Link>
-                    )}
-                    <button
-                      onClick={() => setExpanded(true)}
-                      className={cn(
-                        "group grid size-11 place-items-center rounded-full bg-white/10 transition hover:bg-white/20",
-                        mode === "full" && "lg:hidden",
-                      )}
-                      aria-label="Open menu"
-                    >
-                      <span className="flex w-4 flex-col gap-[5px]">
-                        <span className="h-[1.5px] w-full rounded bg-current transition-all group-hover:w-3/4" />
-                        <span className="h-[1.5px] w-3/4 rounded bg-current transition-all group-hover:w-full" />
-                      </span>
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.nav>
-        </LayoutGroup>
+      {/* ---------- Mobile: top bar (scrolls away, blends with any background) ---------- */}
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-[60] flex items-center justify-between px-5 pt-[max(1rem,env(safe-area-inset-top))] text-white mix-blend-difference lg:hidden">
+        <Link href="/" className="pointer-events-auto display text-[22px] uppercase tracking-[0.02em]">
+          {site.shortName}®
+        </Link>
+        <span className="flex items-center gap-2 text-[12px] font-semibold">
+          <span className="size-1.5 rounded-full bg-white" />
+          {status?.label}
+        </span>
       </header>
+
+      {/* ---------- Mobile: bottom tab bar ---------- */}
+      <nav aria-label="Tabs" className="fixed inset-x-0 bottom-0 z-[70] border-t border-ink/10 bg-bg/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
+        <ul className="grid grid-cols-5">
+          {tabs.map((t) => {
+            const Icon = t.icon;
+            const active = t.href.startsWith("/") && isActive(pathname, t.href);
+            const inner = (
+              <>
+                {t.href === "#bag" ? (
+                  <span className="relative -mt-6 grid size-14 place-items-center rounded-full bg-accent text-white shadow-[0_10px_25px_-8px_var(--accent)] ring-4 ring-bg">
+                    <Icon className="size-5" />
+                    <BagCount className="absolute -right-0.5 -top-0.5 bg-ink" />
+                  </span>
+                ) : (
+                  <Icon className={cn("size-[21px] transition-transform duration-300", active && "-translate-y-0.5")} strokeWidth={active ? 2.4 : 1.8} />
+                )}
+                <span className={cn("text-[10.5px] font-semibold", t.href === "#bag" && "mt-0.5")}>{t.label}</span>
+                {active && <motion.span layoutId="tab-active" className="absolute top-0 h-[3px] w-8 rounded-b bg-accent" transition={{ type: "spring", stiffness: 500, damping: 36 }} />}
+              </>
+            );
+            const cls = cn("relative flex h-16 w-full flex-col items-center justify-center gap-1 transition-colors", active ? "text-ink" : "text-ink/50");
+            return (
+              <li key={t.label} className="flex justify-center">
+                {t.href === "#bag" ? (
+                  <button className={cls} onClick={() => setBag(true)} aria-label="Open bag">
+                    {inner}
+                  </button>
+                ) : t.href === "#more" ? (
+                  <button className={cls} onClick={() => setOpen(true)} aria-label="Open menu">
+                    {inner}
+                  </button>
+                ) : (
+                  <Link href={t.href} className={cls}>
+                    {inner}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <Overlay open={open} onClose={() => setOpen(false)} />
+      <AddedToast />
     </>
   );
 }

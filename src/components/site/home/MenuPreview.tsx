@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
@@ -19,17 +20,10 @@ export function MenuPreview() {
   return (
     <section className="bg-soft py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <Reveal>
-            <p className="eyebrow text-accent">On the menu today</p>
-            <h2 className="display mt-3 text-[clamp(2.8rem,8vw,6rem)]">
-              Order ahead, <em>skip the line.</em>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="max-w-sm text-muted">Pick up in 8 minutes, or have it delivered warm within 6 km. Everything’s made the moment you order.</p>
-          </Reveal>
-        </div>
+        <SectionHead label="On the menu today" title="Order ahead," accent="skip the line." aside={<MoreLink href="/menu">Full menu</MoreLink>} />
+        <Reveal delay={0.1} className="mt-6 grid grid-cols-12">
+          <p className="col-span-12 max-w-md text-muted md:col-span-6 md:col-start-4">Pick up in 8 minutes, or have it delivered warm within 6 km. Everything’s made the moment you order.</p>
+        </Reveal>
 
         <div className="-mx-5 mt-10 overflow-x-auto px-5 no-scrollbar sm:mx-0 sm:px-0">
           <div className="inline-flex gap-1 rounded-full bg-bg p-1 ring-1 ring-line">
@@ -46,7 +40,7 @@ export function MenuPreview() {
           </div>
         </div>
 
-        <motion.div layout className="mt-8 grid gap-3 md:grid-cols-2">
+        <motion.div layout className="mt-6 grid md:grid-cols-2 md:gap-x-14">
           <AnimatePresence mode="popLayout">
             {items.map((p) => (
               <MenuRow key={p.id} p={p} />

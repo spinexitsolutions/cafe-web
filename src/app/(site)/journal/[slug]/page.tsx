@@ -24,7 +24,7 @@ export default function PostPage() {
   return (
     <article>
       <motion.div style={{ scaleX: progress }} className="fixed inset-x-0 top-0 z-[55] h-1 origin-left bg-accent" />
-      <header className="mx-auto max-w-4xl px-5 pb-10 pt-32 sm:px-8 sm:pt-40">
+      <header className="mx-auto max-w-4xl px-5 pb-10 pt-20 sm:px-8 lg:pt-24">
         <Link href="/journal" className="flex items-center gap-2 text-sm text-muted hover:text-ink"><ArrowLeft className="size-4" /> Journal</Link>
         <p className="eyebrow mt-8 text-accent">{post.tags.join(" · ")}</p>
         <h1 className="display mt-4 text-[clamp(2.8rem,7vw,5.5rem)] leading-[0.98]"><SplitWords text={post.title} animateOnMount stagger={0.03} /></h1>

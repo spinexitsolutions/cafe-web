@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -26,8 +27,8 @@ export function Testimonials() {
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-      <Reveal className="flex items-center justify-between">
-        <p className="eyebrow text-accent">Kind words</p>
+      <SectionHead label="Kind words" title="Said over" accent="coffee." />
+      <Reveal className="mt-8 flex items-center justify-end">
         <div className="flex gap-2">
           <button onClick={() => go(-1)} className="grid size-11 place-items-center rounded-full ring-1 ring-line transition hover:bg-ink hover:text-bg" aria-label="Previous">
             <ArrowLeft className="size-4" />

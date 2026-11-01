@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -24,7 +25,7 @@ function Card({ p, i, cur }: { p: Product; i: number; cur: string }) {
       </div>
       <div className="absolute inset-x-0 bottom-0 p-6 text-white">
         {p.notes && <p className="eyebrow text-white/60">{p.notes}</p>}
-        <h3 className="display mt-2 text-4xl sm:text-5xl">{p.name}</h3>
+        <h3 className="display display-n mt-2 text-4xl sm:text-[2.6rem]">{p.name}</h3>
         <p className="mt-2 max-w-xs text-sm text-white/75">{p.description}</p>
         <div className="mt-5 flex items-center justify-between">
           <span className="text-lg font-medium">{money(p.price, cur)}</span>
@@ -62,16 +63,8 @@ export function Signature() {
   }, [list.length]);
 
   const Header = (
-    <div className="mx-auto flex w-full max-w-7xl items-end justify-between gap-6 px-5 sm:px-8">
-      <div>
-        <p className="eyebrow text-accent">The signatures</p>
-        <h2 className="display mt-3 text-[clamp(2.8rem,8vw,6.5rem)]">
-          House <em>favourites</em>
-        </h2>
-      </div>
-      <Link href="/menu" className="mb-3 hidden shrink-0 rounded-full px-5 py-3 text-sm font-medium ring-1 ring-line transition hover:bg-ink hover:text-bg sm:block">
-        Full menu
-      </Link>
+    <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
+      <SectionHead label="The signatures" title="House" accent="favourites" aside={<MoreLink href="/menu">Full menu</MoreLink>} />
     </div>
   );
 

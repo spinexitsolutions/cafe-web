@@ -103,7 +103,7 @@ export function ProductCard({ p, index = 0 }: { p: Product; index?: number }) {
   );
 }
 
-/** Compact row used on the menu */
+/** Menu-board row: thumbnail, name … dotted leader … price, and a round add button. */
 export function MenuRow({ p }: { p: Product }) {
   const cur = useDB((s) => s.settings.site.currency);
   const quickAdd = useQuickAdd();
@@ -113,37 +113,38 @@ export function MenuRow({ p }: { p: Product }) {
       layout
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.97 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="group flex gap-4 rounded-[24px] bg-surface p-3 ring-1 ring-line transition hover:shadow-[0_20px_40px_-25px_rgba(0,0,0,0.35)] sm:p-3.5"
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative isolate grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-ink/12 py-4"
     >
-      <Link href={`/product/${p.slug}`} className="relative size-28 shrink-0 overflow-hidden rounded-[18px] sm:size-32">
-        <Img src={p.image} alt={p.name} className="h-full w-full object-cover duration-700 group-hover:scale-105" />
-        {p.tags[0] && <Tag t={p.tags[0]} className="absolute left-2 top-2 px-2 py-0.5 text-[9px]" />}
+      <span className="pointer-events-none absolute inset-y-0 -left-3 -right-3 -z-10 origin-left scale-x-0 rounded-[var(--radius)] bg-surface transition-transform duration-500 ease-[cubic-bezier(.76,0,.24,1)] group-hover:scale-x-100" />
+      <Link href={`/product/${p.slug}`} className="relative size-[4.5rem] overflow-hidden rounded-[var(--radius)] sm:size-20">
+        <Img src={p.image} alt={p.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
       </Link>
-      <div className="flex min-w-0 flex-1 flex-col py-1">
-        <Link href={`/product/${p.slug}`}>
-          <h3 className="font-medium leading-snug">{p.name}</h3>
+      <div className="min-w-0">
+        <Link href={`/product/${p.slug}`} className="flex items-baseline gap-2">
+          <h3 className="truncate text-[17px] font-semibold leading-tight sm:text-lg">{p.name}</h3>
+          <span className="hidden h-0 min-w-6 flex-1 translate-y-[-0.25em] border-b-2 border-dotted border-ink/20 sm:block" />
+          <span className="hidden shrink-0 font-bold tabular-nums sm:block">{money(p.price, cur)}</span>
         </Link>
-        <p className="mt-1 line-clamp-2 text-sm leading-snug text-muted">{p.description}</p>
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <span className="font-medium tabular-nums">
-            {money(p.price, cur)}
-            {p.tags.includes("vegan") && <span className="ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800">VG</span>}
-          </span>
-          <button
-            disabled={soldOut}
-            onClick={() => quickAdd(p)}
-            className="flex h-9 items-center gap-1 rounded-full bg-ink pl-3 pr-3.5 text-xs font-medium text-bg transition hover:bg-accent active:scale-95 disabled:bg-line disabled:text-muted"
-          >
-            {soldOut ? "Sold out" : (
-              <>
-                <Plus className="size-3.5" /> Add
-              </>
-            )}
-          </button>
+        <p className="mt-1 line-clamp-1 text-sm text-muted">{p.description}</p>
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px] font-semibold">
+          <span className="font-bold tabular-nums text-ink sm:hidden">{money(p.price, cur)}</span>
+          {p.tags.slice(0, 2).map((t) => (
+            <span key={t} className="rounded-full bg-ink/[0.06] px-2 py-0.5 capitalize text-ink/70">
+              {t.replace("-", " ")}
+            </span>
+          ))}
         </div>
       </div>
+      <button
+        disabled={soldOut}
+        onClick={() => quickAdd(p)}
+        aria-label={soldOut ? `${p.name} sold out` : `Add ${p.name}`}
+        className="grid size-11 place-items-center rounded-full ring-1 ring-ink/20 transition duration-300 hover:rotate-90 hover:bg-accent hover:text-white hover:ring-accent active:scale-90 disabled:opacity-30 disabled:hover:rotate-0 disabled:hover:bg-transparent"
+      >
+        <Plus className="size-5" />
+      </button>
     </motion.div>
   );
 }

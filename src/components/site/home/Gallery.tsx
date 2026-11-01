@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useDB } from "@/store/db";
@@ -33,14 +34,16 @@ export function Gallery() {
   return (
     <section className="overflow-hidden py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <Reveal className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="display text-[clamp(2.8rem,8vw,6rem)]">
-            Moments at <em>Aura</em>
-          </h2>
-          <a href={`https://instagram.com/${insta}`} target="_blank" rel="noreferrer" className="eyebrow text-accent">
-            @{insta} ↗
-          </a>
-        </Reveal>
+        <SectionHead
+          label="Gallery"
+          title="Moments at"
+          accent="Aura"
+          aside={
+            <a href={`https://instagram.com/${insta}`} target="_blank" rel="noreferrer" className="border-b border-ink/25 pb-1 text-sm font-semibold">
+              @{insta} ↗
+            </a>
+          }
+        />
         <div ref={ref} className="mt-12">
           <div className="grid grid-cols-2 gap-3 md:hidden">
             {split(2).map((col, c) => (

@@ -12,8 +12,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <SmoothScroll />
       <Intro />
       <Navbar />
-      <main className="min-h-dvh">{children}</main>
-      <Footer />
+      <div className="pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0 lg:pl-[76px]">
+        <main className="min-h-dvh">{children}</main>
+        <Footer />
+      </div>
       <CartDrawer />
       <ProductSheet />
       <AnnouncementBar />

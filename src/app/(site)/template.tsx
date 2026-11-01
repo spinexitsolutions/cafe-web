@@ -20,9 +20,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
       {!first && (
         <motion.div
           aria-hidden
-          className="pointer-events-none fixed inset-0 z-[90] origin-top bg-accent"
-          initial={{ scaleY: 1 }}
-          animate={{ scaleY: 0 }}
+          className="pointer-events-none fixed inset-0 z-[95] origin-right bg-accent"
+          initial={{ scaleX: 1 }}
+          animate={{ scaleX: 0 }}
           transition={{ duration: 0.75, ease: [0.76, 0, 0.24, 1] }}
         />
       )}

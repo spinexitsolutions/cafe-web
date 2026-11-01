@@ -279,11 +279,11 @@ export const seedSettings: Settings = {
   announcement: { enabled: true, text: "New — Honey Cinnamon Latte is back for winter. Use AURA10 for 10% off your first order.", href: "/menu" },
   theme: {
     accent: "#e8432d",
-    background: "#f4f2ee",
-    ink: "#14110f",
+    background: "#f3f1ec",
+    ink: "#141210",
     surface: "#ffffff",
-    displayFont: "bricolage",
-    radius: 24,
+    displayFont: "archivo",
+    radius: 10,
   },
   intro: {
     enabled: true,

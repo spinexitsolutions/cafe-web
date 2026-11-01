@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useRef } from "react";
 import { useDB } from "@/store/db";
@@ -40,12 +41,7 @@ export function Experience() {
   if (!items.length) return null;
   return (
     <section className="mx-auto max-w-7xl px-5 pt-24 sm:px-8 sm:pt-32">
-      <Reveal className="max-w-3xl">
-        <p className="eyebrow text-accent">The experience</p>
-        <h2 className="display mt-3 text-[clamp(2.8rem,8vw,6rem)]">
-          A room built for <em>lingering.</em>
-        </h2>
-      </Reveal>
+      <SectionHead label="The experience" title="A room built for" accent="lingering." />
       <div ref={ref} className="relative mt-10">
         {items.map((it, i) => (
           <StackCard key={i} item={it} i={i} total={items.length} progress={scrollYProgress} />

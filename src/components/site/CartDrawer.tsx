@@ -37,7 +37,7 @@ export function CartDrawer() {
         {open && (
           <>
             <motion.div
-              className="fixed inset-0 z-[60] bg-ink/40 backdrop-blur-[2px]"
+              className="fixed inset-0 z-[90] bg-ink/40 backdrop-blur-[2px]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -46,7 +46,7 @@ export function CartDrawer() {
             <motion.aside
               role="dialog"
               aria-label="Your bag"
-              className="fixed inset-x-0 bottom-0 z-[61] flex max-h-[92dvh] flex-col rounded-t-[32px] bg-bg shadow-2xl sm:inset-y-3 sm:left-auto sm:right-3 sm:max-h-none sm:w-[440px] sm:rounded-[32px]"
+              className="fixed inset-x-0 bottom-0 z-[91] flex max-h-[92dvh] flex-col rounded-t-[32px] bg-bg shadow-2xl sm:inset-y-3 sm:left-auto sm:right-3 sm:max-h-none sm:w-[440px] sm:rounded-[32px]"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
@@ -193,39 +193,6 @@ export function CartDrawer() {
           </>
         )}
       </AnimatePresence>
-      <MobileBagBar />
     </>
-  );
-}
-
-/** Floating bottom bar on phones when the bag has items. */
-function MobileBagBar() {
-  const items = useCart((s) => s.items);
-  const open = useCart((s) => s.open);
-  const setOpen = useCart((s) => s.setOpen);
-  const cur = useDB((s) => s.settings.site.currency);
-  const pathname = usePathname();
-  const count = items.reduce((a, b) => a + b.qty, 0);
-  const sub = items.reduce((a, b) => a + b.qty * b.unitPrice, 0);
-  const hidden = open || count === 0 || pathname.startsWith("/checkout");
-  return (
-    <AnimatePresence>
-      {!hidden && (
-        <motion.button
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          onClick={() => setOpen(true)}
-          className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex h-14 items-center justify-between rounded-full bg-accent pl-2 pr-5 text-white shadow-[0_15px_40px_-10px_rgba(0,0,0,0.4)] sm:hidden"
-        >
-          <span className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center rounded-full bg-white/20 text-sm font-semibold">{count}</span>
-            <span className="text-sm font-medium">View bag</span>
-          </span>
-          <span className="text-sm font-semibold tabular-nums">{money(sub, cur)}</span>
-        </motion.button>
-      )}
-    </AnimatePresence>
   );
 }

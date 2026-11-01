@@ -17,12 +17,12 @@
 }
 
 :root {
-  --bg: #f4f2ee;
-  --ink: #14110f;
+  --bg: #f3f1ec;
+  --ink: #141210;
   --accent: #e8432d;
   --surface: #ffffff;
-  --radius: 24px;
-  --font-display-active: var(--font-bricolage);
+  --radius: 10px;
+  --font-display-active: var(--font-archivo);
   color-scheme: light;
 }
 
@@ -42,7 +42,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
+  font-variation-settings: "wdth" 96;
   overflow-x: clip;
 }
 
@@ -63,14 +63,17 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Display type — heavy, condensed grotesk */
+/* Display type — wide, heavy, menu-board grotesk */
 .display {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-variation-settings: "wdth" 84, "opsz" 96;
-  letter-spacing: -0.032em;
-  line-height: 0.9;
+  font-weight: 800;
+  font-variation-settings: "wdth" 116, "opsz" 96;
+  letter-spacing: -0.025em;
+  line-height: 0.92;
   text-wrap: balance;
+}
+.display-n {
+  font-variation-settings: "wdth" 100, "opsz" 96;
 }
 .display em,
 .display i {
@@ -106,6 +109,32 @@ html.lenis body {
 }
 .eyebrow.plain::before {
   display: none;
+}
+
+/* Letter roll on hover: each char carries a copy of itself below (text-shadow) and slides up */
+.roll {
+  display: inline-flex;
+  overflow: hidden;
+  line-height: 1.12;
+  vertical-align: bottom;
+}
+.roll > span {
+  display: inline-block;
+  white-space: pre;
+  text-shadow: 0 1.12em 0 currentColor;
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+  transition-delay: calc(var(--i) * 16ms);
+}
+.group:hover .roll > span,
+.roll:hover > span,
+.group:focus-visible .roll > span {
+  transform: translateY(-1.12em);
+}
+
+/* Vertical text for the side rail */
+.vtext {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
 /* Film grain overlay for warmth */

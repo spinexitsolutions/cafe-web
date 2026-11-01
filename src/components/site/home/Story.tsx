@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import { motion, useInView, useScroll, useTransform, type MotionValue, animate } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -44,9 +45,7 @@ export function Story() {
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-36">
-      <Reveal>
-        <p className="eyebrow text-accent">{story.eyebrow}</p>
-      </Reveal>
+      <SectionHead label={story.eyebrow} title="" />
       <div ref={ref}>
         <p className="display mt-6 text-[clamp(2.2rem,5.6vw,4.8rem)] leading-[1.04]">
           {words.map((w, i) => (

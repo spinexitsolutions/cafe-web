@@ -153,7 +153,7 @@ export default function CheckoutPage() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-24 pt-28 sm:px-8 sm:pt-32">
+    <div className="mx-auto max-w-7xl px-4 pb-24 pt-20 sm:px-8 lg:pt-24">
       <h1 className="display text-[clamp(3rem,9vw,6.5rem)]">
         Check<em className="text-accent">out</em>
       </h1>
@@ -245,7 +245,7 @@ export default function CheckoutPage() {
           </Step>
         </div>
 
-        <aside className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-7 lg:sticky lg:top-28">
+        <aside className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-7 lg:sticky lg:top-20">
           <h2 className="text-lg font-medium">Order summary</h2>
           <ul className="mt-4 max-h-72 space-y-4 overflow-y-auto pr-1" data-lenis-prevent>
             {items.map((i) => (

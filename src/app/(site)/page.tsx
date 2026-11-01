@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment } from "react";
 import type { HomeSectionKey } from "@/lib/types";
 import { useDB } from "@/store/db";
+import { SectionNo } from "@/components/motion/Kit";
 import { Events } from "@/components/site/home/Events";
 import { Experience } from "@/components/site/home/Experience";
 import { Gallery } from "@/components/site/home/Gallery";
@@ -34,6 +34,8 @@ const SECTIONS: Record<HomeSectionKey, () => React.ReactNode> = {
 
 export default function Home() {
   const sections = useDB((s) => s.settings.sections);
+  const UNNUMBERED = ["marquee", "shop", "reserve", "newsletter"];
+  let n = 0;
   return (
     <>
       <Hero />
@@ -41,7 +43,13 @@ export default function Home() {
         .filter((s) => s.enabled)
         .map((s) => {
           const C = SECTIONS[s.key];
-          return C ? <Fragment key={s.key}>{<C />}</Fragment> : null;
+          if (!C) return null;
+          if (!UNNUMBERED.includes(s.key)) n += 1;
+          return (
+            <SectionNo.Provider key={s.key} value={n}>
+              <C />
+            </SectionNo.Provider>
+          );
         })}
       <div className="h-20 sm:h-28" />
     </>

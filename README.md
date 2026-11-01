@@ -1,6 +1,6 @@
 # Aura Coffee Atelier — café website + admin (CRM · CMS · shop)
 
-A demo café website built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, **Framer Motion**, **Lenis** smooth scrolling and **Zustand**. It's mobile-first, and the design follows Apple's clean style. Typography is all sans-serif: Bricolage Grotesque for headlines and Funnel Sans for body text, with a "coffee cherry" red accent.
+A demo café website built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, **Framer Motion**, **Lenis** smooth scrolling and **Zustand**. It's mobile-first, and the design follows Apple's clean style. Typography is all sans-serif: Archivo (expanded) for headlines and Instrument Sans for body text, on an editorial grid with a "coffee cherry" red accent.
 
 ```bash
 npm install
@@ -11,10 +11,10 @@ npm run build && npm start
 **Admin:** `/admin`. Demo login: `admin@aura.cafe` / `aura123`.
 
 ## Storefront
-- **Hero:** "Coffee is a fruit." A drink switcher where the whole hero recolours for each drink (latte, matcha, iced latte, cold brew), with a large circular drink image, a price sticker you can tap to add the drink, mouse parallax and autoplay. The drinks, their colours and the autoplay timing are edited in the CMS.
+- **Hero:** a split screen with a café menu board of today's pours next to a full-height drink photo. The whole hero recolours for each drink, and the board auto-advances. Drinks, colours and timing are edited in the CMS.
 - **Page transitions:** an accent-colour wipe between pages.
 - **Intro animation:** curtain, counter or minimal style. The words, duration, on/off switch and once-per-session setting are all controlled from the admin.
-- **"Island" navbar:** a floating capsule that compacts while you scroll and expands into a full-screen menu with image previews. When you add something to the bag, it briefly turns into a live "Added to bag" notification.
+- **Navigation:** a vertical side rail on desktop and an app-style bottom tab bar on phones (with a raised bag button). The menu opens as a full-screen index with rolling-letter links and image previews.
 - **Home sections:**
   - Hero image that expands as you scroll
   - Apple-style word-by-word text reveal

@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 type Theme = Settings["theme"];
 
 const PRESETS: { name: string; theme: Omit<Theme, "displayFont" | "radius"> }[] = [
-  { name: "Cherry", theme: { accent: "#e8432d", background: "#f4f2ee", ink: "#14110f", surface: "#ffffff" } },
+  { name: "Cherry", theme: { accent: "#e8432d", background: "#f3f1ec", ink: "#141210", surface: "#ffffff" } },
   { name: "Matcha", theme: { accent: "#3f7d20", background: "#f1f3ea", ink: "#121a0c", surface: "#ffffff" } },
   { name: "Midnight", theme: { accent: "#ff6a3d", background: "#121010", ink: "#f2eee8", surface: "#1c1917" } },
   { name: "Cobalt", theme: { accent: "#2b4bff", background: "#f3f3f0", ink: "#0f1020", surface: "#ffffff" } },
@@ -18,8 +18,8 @@ const PRESETS: { name: string; theme: Omit<Theme, "displayFont" | "radius"> }[] 
 ];
 
 const FONTS: { id: DisplayFont; name: string; css: string; note: string }[] = [
-  { id: "bricolage", name: "Bricolage Grotesque", css: "var(--font-bricolage)", note: "Bold, condensed, characterful" },
-  { id: "funnel", name: "Funnel Display", css: "var(--font-funnel-display)", note: "Clean, modern, friendly" },
+  { id: "archivo", name: "Archivo Expanded", css: "var(--font-archivo)", note: "Wide, bold, menu-board" },
+  { id: "bricolage", name: "Bricolage Grotesque", css: "var(--font-bricolage)", note: "Condensed, characterful" },
   { id: "unbounded", name: "Unbounded", css: "var(--font-unbounded)", note: "Wide, geometric, loud" },
 ];
 

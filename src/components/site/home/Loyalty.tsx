@@ -13,8 +13,8 @@ export function Loyalty() {
     <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <Reveal>
-          <p className="eyebrow text-accent">Aura rewards</p>
-          <h2 className="display mt-3 text-[clamp(2.8rem,7vw,5.5rem)]">
+          <p className="text-[13px] font-semibold"><span className="text-accent">(★)</span> <span className="text-muted">Aura rewards</span></p>
+          <h2 className="display mt-4 text-[clamp(2.3rem,6vw,4.8rem)]">
             Every tenth cup <em>is on us.</em>
           </h2>
           <p className="mt-5 max-w-md text-muted">{loyalty.rewardText} Join the list for early access to new roasts and members-only cuppings.</p>

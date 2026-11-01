@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import Link from "next/link";
 import { fmtDate } from "@/lib/utils";
 import { useDB } from "@/store/db";
@@ -12,17 +13,7 @@ export function Journal() {
   if (!posts.length) return null;
   return (
     <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-      <Reveal className="flex items-end justify-between gap-6">
-        <div>
-          <p className="eyebrow text-accent">The journal</p>
-          <h2 className="display mt-3 text-[clamp(2.8rem,8vw,6rem)]">
-            Notes from <em>the bar</em>
-          </h2>
-        </div>
-        <Link href="/journal" className="mb-3 hidden rounded-full px-5 py-3 text-sm font-medium ring-1 ring-line transition hover:bg-ink hover:text-bg sm:block">
-          Read all
-        </Link>
-      </Reveal>
+      <SectionHead label="The journal" title="Notes from" accent="the bar" aside={<MoreLink href="/journal">Read all</MoreLink>} />
       <div className="mt-12 grid gap-8 md:grid-cols-3">
         {posts.map((p, i) => (
           <Reveal key={p.id} delay={i * 0.08}>

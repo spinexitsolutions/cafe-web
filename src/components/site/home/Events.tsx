@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreLink, SectionHead } from "../../motion/Kit";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
@@ -22,17 +23,7 @@ export function Events() {
   return (
     <section className="bg-ink py-24 text-bg sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="flex items-end justify-between gap-6">
-          <Reveal>
-            <p className="eyebrow text-accent">Happening at Aura</p>
-            <h2 className="display mt-3 text-[clamp(2.8rem,8vw,6rem)]">
-              Workshops & <em>evenings</em>
-            </h2>
-          </Reveal>
-          <Link href="/events" className="mb-3 hidden rounded-full px-5 py-3 text-sm font-medium ring-1 ring-bg/20 transition hover:bg-bg hover:text-ink sm:block">
-            All events
-          </Link>
-        </div>
+        <SectionHead dark label="Happening at Aura" title="Workshops &" accent="evenings" aside={<MoreLink dark href="/events">All events</MoreLink>} />
 
         <ul
           className="relative mt-12 border-t border-bg/15"

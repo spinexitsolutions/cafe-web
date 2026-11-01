@@ -72,7 +72,7 @@ export default function ProductPage() {
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-5 pb-16 pt-28 sm:px-8 sm:pt-32">
+      <section className="mx-auto max-w-7xl px-5 pb-16 pt-20 sm:px-8 lg:pt-24">
         <nav className="eyebrow mb-6 flex gap-2 text-muted">
           <Link href={p.type === "menu" ? "/menu" : "/shop"} className="hover:text-ink">
             {p.type === "menu" ? "Menu" : "Shop"}
@@ -80,7 +80,7 @@ export default function ProductPage() {
           /<span className="text-ink">{cat?.name}</span>
         </nav>
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-          <div className="lg:sticky lg:top-28 lg:self-start">
+          <div className="lg:sticky lg:top-20 lg:self-start">
             <div className="relative aspect-square overflow-hidden rounded-card bg-soft sm:aspect-[5/4] lg:aspect-square">
               <AnimatePresence mode="popLayout">
                 <motion.div key={imgIdx} initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className="absolute inset-0">
@@ -260,7 +260,7 @@ export default function ProductPage() {
               ))}
             </div>
           ) : (
-            <div className="mt-8 grid gap-3 md:grid-cols-2">
+            <div className="mt-6 grid md:grid-cols-2 md:gap-x-14">
               {related.map((r) => (
                 <MenuRow key={r.id} p={r} />
               ))}
