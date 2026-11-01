@@ -46,7 +46,7 @@ export function CartDrawer() {
             <motion.aside
               role="dialog"
               aria-label="Your bag"
-              className="fixed inset-x-0 bottom-0 z-[91] flex max-h-[92dvh] flex-col rounded-t-[32px] bg-bg shadow-2xl sm:inset-y-3 sm:left-auto sm:right-3 sm:max-h-none sm:w-[440px] sm:rounded-[32px]"
+              className="fixed inset-x-0 bottom-0 z-[91] flex max-h-[92dvh] flex-col rounded-t-[18px] border-l border-ink/10 bg-bg shadow-2xl sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none sm:w-[460px] sm:rounded-none"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
@@ -59,7 +59,7 @@ export function CartDrawer() {
               <div className="mx-auto mt-2.5 h-1.5 w-10 rounded-full bg-ink/15 sm:hidden" />
               <div className="flex items-center justify-between px-6 pb-3 pt-4">
                 <div>
-                  <h2 className="display text-3xl">Your bag</h2>
+                  <h2 className="display text-3xl uppercase">Your bag</h2>
                   <p className="text-sm text-muted">{t.count ? `${t.count} item${t.count > 1 ? "s" : ""}` : "Nothing here yet"}</p>
                 </div>
                 <button onClick={() => setOpen(false)} className="grid size-10 place-items-center rounded-full bg-soft transition hover:bg-line" aria-label="Close bag">
@@ -68,7 +68,7 @@ export function CartDrawer() {
               </div>
 
               {items.length > 0 && (
-                <div className="mx-6 mb-2 rounded-2xl bg-surface p-3.5 text-sm">
+                <div className="mx-6 mb-2 border-y border-ink/10 py-3.5 text-sm">
                   <p className="text-muted">
                     {toFree > 0 ? (
                       <>
@@ -116,7 +116,7 @@ export function CartDrawer() {
                           <div className="flex gap-4 py-4">
                             <Link href={`/product/${i.slug}`} className="shrink-0">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={i.image} alt={i.name} className="size-20 rounded-2xl object-cover" />
+                              <img src={i.image} alt={i.name} className="size-20 rounded-[var(--radius)] object-cover" />
                             </Link>
                             <div className="flex min-w-0 flex-1 flex-col">
                               <div className="flex justify-between gap-2">
@@ -154,7 +154,7 @@ export function CartDrawer() {
                         <button
                           key={p.id}
                           onClick={() => add({ productId: p.id, slug: p.slug, name: p.name, image: p.image, unitPrice: p.price, options: [] })}
-                          className="group flex w-44 shrink-0 items-center gap-2.5 rounded-2xl bg-surface p-2 text-left ring-1 ring-line transition hover:ring-accent"
+                          className="group flex w-44 shrink-0 items-center gap-2.5 rounded-[var(--radius)] bg-surface p-2 text-left ring-1 ring-ink/10 transition hover:ring-accent"
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={p.image} alt="" className="size-12 rounded-xl object-cover" />

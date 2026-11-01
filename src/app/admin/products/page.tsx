@@ -61,7 +61,7 @@ export default function ProductsPage() {
         }
       />
       {lowCount > 0 && (
-        <button onClick={() => setStock("low")} className="mb-4 flex w-full items-center gap-2 rounded-2xl bg-[#ff9f0a]/10 px-4 py-3 text-left text-sm text-[#8a5300]">
+        <button onClick={() => setStock("low")} className="mb-4 flex w-full items-center gap-2 rounded-[8px] border border-[#b0861f]/30 bg-[#b0861f]/[0.07] px-4 py-3 text-left text-sm font-semibold text-[#6b5013]">
           <AlertTriangle className="size-4" /> {lowCount} products are low or out of stock — review inventory
         </button>
       )}
@@ -80,7 +80,7 @@ export default function ProductsPage() {
           <>
             <Table head={["Product", "Category", "Price", "Stock", "Featured", "Visible", ""]}>
               {list.map((p) => (
-                <tr key={p.id} className={cn("transition hover:bg-black/[0.02]", !p.active && "opacity-55")}>
+                <tr key={p.id} className={cn("transition hover:bg-[var(--accent)]/[0.02]", !p.active && "opacity-55")}>
                   <Td>
                     <Link href={`/admin/products/${p.id}`} className="flex items-center gap-3">
                       <Thumb src={p.image} className="size-11" />

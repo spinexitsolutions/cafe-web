@@ -1,0 +1,43 @@
+/* Admin console — editorial skin matching the storefront. Overrides the
+   base `.admin` tokens from globals.css. */
+.admin.admin {
+  --a-bg: var(--bg);
+  --a-card: var(--surface);
+  --a-ink: var(--ink);
+  --a-muted: color-mix(in oklab, var(--ink) 55%, var(--bg));
+  --a-line: color-mix(in oklab, var(--ink) 11%, transparent);
+  background: var(--a-bg);
+  color: var(--a-ink);
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 96;
+}
+.admin.admin .a-input {
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklab, var(--ink) 15%, transparent);
+  background: var(--surface);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+.admin.admin .a-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+.admin.admin .a-input::placeholder {
+  color: color-mix(in oklab, var(--ink) 35%, transparent);
+}
+/* Tiny uppercase labels used for card titles, table heads and nav groups */
+.admin .a-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.admin .a-num {
+  font-variant-numeric: tabular-nums;
+}
+@media print {
+  .admin.admin {
+    background: #fff;
+  }
+}

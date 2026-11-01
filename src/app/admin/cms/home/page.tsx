@@ -79,10 +79,10 @@ export default function HomeCMS() {
               <Field label="Headline (accent part)">
                 <Input value={hero.titleItalic} onChange={(e) => set("hero", { ...hero, titleItalic: e.target.value })} />
               </Field>
-              <div className="rounded-2xl bg-black/[0.03] px-5 py-6 sm:col-span-2">
+              <div className="rounded-[10px] bg-[var(--a-line)] px-5 py-6 sm:col-span-2">
                 <div className="text-[11px] uppercase tracking-[0.18em] text-[var(--a-muted)]">{hero.eyebrow}</div>
-                <div className="mt-2 font-[family-name:var(--font-display-active)] text-4xl leading-none tracking-tight sm:text-5xl">
-                  {hero.title} <em className="text-[var(--accent)]">{hero.titleItalic}</em>
+                <div className="display mt-2 text-4xl uppercase sm:text-5xl">
+                  {hero.title} <em>{hero.titleItalic}</em>
                 </div>
               </div>
               <Field label="Subtitle" className="sm:col-span-2">
@@ -111,7 +111,7 @@ export default function HomeCMS() {
                 const slides = hero.slides ?? [];
                 const setSlide = (patch: Partial<typeof sl>) => set("hero", { ...hero, slides: slides.map((x, j) => (j === k ? { ...x, ...patch } : x)) });
                 return (
-                  <div key={sl.id} className="rounded-2xl border border-[var(--a-line)] p-3" style={{ background: sl.bg, color: sl.ink }}>
+                  <div key={sl.id} className="rounded-[10px] border border-[var(--a-line)] p-3" style={{ background: sl.bg, color: sl.ink }}>
                     <div className="flex items-center gap-2">
                       <span className="w-6 text-xs font-semibold opacity-60">{String(k + 1).padStart(2, "0")}</span>
                       <Select
@@ -129,8 +129,8 @@ export default function HomeCMS() {
                     </div>
                     <div className="mt-3 grid grid-cols-3 gap-2 pl-8 text-xs font-medium">
                       {(["bg", "ink", "pop"] as const).map((key) => (
-                        <label key={key} className="flex items-center gap-2 rounded-xl bg-white/70 p-1.5 pr-2 text-[var(--a-ink)]">
-                          <span className="relative size-7 shrink-0 overflow-hidden rounded-lg ring-1 ring-black/10" style={{ background: sl[key] }}>
+                        <label key={key} className="flex items-center gap-2 rounded-[8px] bg-white/70 p-1.5 pr-2 text-[var(--a-ink)]">
+                          <span className="relative size-7 shrink-0 overflow-hidden rounded-lg ring-1 ring-[var(--a-line)]" style={{ background: sl[key] }}>
                             <input type="color" value={sl[key]} onChange={(e) => setSlide({ [key]: e.target.value })} className="absolute inset-0 cursor-pointer opacity-0" />
                           </span>
                           {key === "bg" ? "Background" : key === "ink" ? "Text" : "Accent"}
@@ -174,7 +174,7 @@ export default function HomeCMS() {
               </Field>
               <ImageInput value={story.image} onChange={(v) => set("story", { ...story, image: v })} aspect="aspect-[16/9]" />
               <div>
-                <div className="mb-1.5 text-[13px] font-medium text-[#3a3a3c]">Stats</div>
+                <div className="mb-1.5 text-[13px] font-medium text-[var(--a-muted)]">Stats</div>
                 <div className="space-y-2">
                   {story.stats.map((s, i) => (
                     <div key={i} className="flex gap-2">
@@ -196,7 +196,7 @@ export default function HomeCMS() {
           <Card title="Experience cards">
             <div className="space-y-4">
               {draft.experience.map((x, i) => (
-                <div key={i} className="grid gap-3 rounded-xl border border-[var(--a-line)] p-3 sm:grid-cols-[1fr_200px]">
+                <div key={i} className="grid gap-3 rounded-[8px] border border-[var(--a-line)] p-3 sm:grid-cols-[1fr_200px]">
                   <div className="space-y-2">
                     <Input value={x.title} onChange={(e) => set("experience", draft.experience.map((y, j) => (j === i ? { ...y, title: e.target.value } : y)))} placeholder="Title" className="font-medium" />
                     <Textarea value={x.text} onChange={(e) => set("experience", draft.experience.map((y, j) => (j === i ? { ...y, text: e.target.value } : y)))} className="!min-h-16" />
@@ -218,7 +218,7 @@ export default function HomeCMS() {
           <Card title="Sections" action={<span className="text-xs text-[var(--a-muted)]">Drag or use arrows</span>}>
             <Reorder.Group axis="y" values={draft.sections} onReorder={(v) => set("sections", v)} className="space-y-1.5">
               {draft.sections.map((s, i) => (
-                <Reorder.Item key={s.key} value={s} className="flex cursor-grab items-center gap-2 rounded-xl border border-[var(--a-line)] bg-white px-2 py-2 active:cursor-grabbing">
+                <Reorder.Item key={s.key} value={s} className="flex cursor-grab items-center gap-2 rounded-[8px] border border-[var(--a-line)] bg-white px-2 py-2 active:cursor-grabbing">
                   <GripVertical className="size-4 shrink-0 text-black/25" />
                   <span className={`flex-1 text-sm ${s.enabled ? "" : "text-[var(--a-muted)] line-through"}`}>{s.label}</span>
                   <IconButton className="!size-7" disabled={i === 0} onClick={() => moveSection(i, -1)} aria-label="Up">

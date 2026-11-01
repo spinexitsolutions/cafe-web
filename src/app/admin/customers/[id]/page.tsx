@@ -97,7 +97,7 @@ export default function CustomerDetail() {
               ["Orders", String(data.count)],
               ["Avg. order", money(data.aov, cur)],
             ].map(([l, v]) => (
-              <div key={l} className="rounded-2xl bg-black/[0.035] p-3">
+              <div key={l} className="rounded-[10px] bg-[var(--a-line)] p-3">
                 <div className="text-[11px] text-[var(--a-muted)]">{l}</div>
                 <div className="mt-0.5 text-lg font-semibold tabular-nums">{v}</div>
               </div>
@@ -153,7 +153,7 @@ export default function CustomerDetail() {
               </div>
               <Gift className="size-8 text-[var(--accent)]" />
             </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-black/[0.06]">
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--a-line)]">
               <div className="h-full rounded-full bg-[var(--accent)]" style={{ width: `${Math.min(100, ((customer.points % rewardAt) / rewardAt) * 100)}%` }} />
             </div>
             <div className="mt-1.5 text-xs text-[var(--a-muted)]">
@@ -226,7 +226,7 @@ export default function CustomerDetail() {
             ) : (
               <div className="divide-y divide-[var(--a-line)]">
                 {data.orders.slice(0, 12).map((o) => (
-                  <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-black/[0.02]">
+                  <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-[var(--accent)]/[0.02]">
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-medium">{o.number}</div>
                       <div className="truncate text-xs text-[var(--a-muted)]">

@@ -13,7 +13,7 @@ import { cn, money, timeAgo, to12h } from "@/lib/utils";
 function Delta({ v }: { v: number }) {
   const up = v >= 0;
   return (
-    <span className={cn("inline-flex items-center gap-0.5 text-xs font-medium", up ? "text-[#1f8a3b]" : "text-[#d1281e]")}>
+    <span className={cn("inline-flex items-center gap-0.5 text-xs font-bold", up ? "text-[#1f6b42]" : "text-[#a52d24]")}>
       {up ? <TrendingUp className="size-3.5" /> : <TrendingDown className="size-3.5" />}
       {Math.abs(v).toFixed(1)}%
     </span>
@@ -22,17 +22,29 @@ function Delta({ v }: { v: number }) {
 
 function Kpi({ label, value, sub, icon: Icon, i }: { label: string; value: string; sub?: React.ReactNode; icon: React.ComponentType<{ className?: string }>; i: number }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-      <Card className="h-full">
-        <div className="flex items-center justify-between">
-          <span className="text-[13px] text-[var(--a-muted)]">{label}</span>
-          <span className="grid size-8 place-items-center rounded-full bg-black/[0.04]">
-            <Icon className="size-4 text-[var(--accent)]" />
-          </span>
-        </div>
-        <div className="mt-3 text-[26px] font-semibold tracking-tight tabular-nums">{value}</div>
-        {sub && <div className="mt-1 text-xs text-[var(--a-muted)]">{sub}</div>}
-      </Card>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: i * 0.08, duration: 0.6 }}
+      className="group relative flex flex-col bg-[var(--surface)] p-4 transition-colors hover:bg-[var(--bg)] sm:p-5"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <span className="a-label text-[var(--a-muted)]">
+          <span className="text-[var(--accent)]">({String(i + 1).padStart(2, "0")})</span> {label}
+        </span>
+        <span className="grid size-8 shrink-0 place-items-center rounded-full border border-[var(--a-line)] transition-colors group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-white">
+          <Icon className="size-4" />
+        </span>
+      </div>
+      <motion.div
+        initial={{ y: "100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.15 + i * 0.08, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="display a-num mt-6 text-[clamp(1.55rem,3.2vw,2.6rem)] leading-none"
+      >
+        {value}
+      </motion.div>
+      {sub && <div className="mt-2 text-xs text-[var(--a-muted)]">{sub}</div>}
     </motion.div>
   );
 }
@@ -64,12 +76,12 @@ function RevenueChart({ data, currency }: { data: { date: Date; revenue: number;
       <svg viewBox={`0 0 ${W} ${H}`} className="h-[220px] w-full overflow-visible" preserveAspectRatio="none" onMouseLeave={() => setHover(null)}>
         <defs>
           <linearGradient id="rev-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.25" />
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.22" />
             <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
           </linearGradient>
         </defs>
         {[0.25, 0.5, 0.75, 1].map((g) => (
-          <line key={g} x1={pad.l} x2={W - pad.r} y1={pad.t + (1 - g) * (H - pad.t - pad.b)} y2={pad.t + (1 - g) * (H - pad.t - pad.b)} stroke="rgba(0,0,0,0.06)" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
+          <line key={g} x1={pad.l} x2={W - pad.r} y1={pad.t + (1 - g) * (H - pad.t - pad.b)} y2={pad.t + (1 - g) * (H - pad.t - pad.b)} stroke="color-mix(in oklab, var(--ink) 10%, transparent)" strokeDasharray="2 5" vectorEffect="non-scaling-stroke" />
         ))}
         <motion.path d={area} fill="url(#rev-fill)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.4 }} />
         <motion.path d={line} fill="none" stroke="var(--accent)" strokeWidth={2.5} vectorEffect="non-scaling-stroke" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }} />
@@ -78,7 +90,7 @@ function RevenueChart({ data, currency }: { data: { date: Date; revenue: number;
         ))}
         {hover !== null && (
           <>
-            <line x1={x(hover)} x2={x(hover)} y1={pad.t} y2={H - pad.b} stroke="rgba(0,0,0,0.15)" vectorEffect="non-scaling-stroke" />
+            <line x1={x(hover)} x2={x(hover)} y1={pad.t} y2={H - pad.b} stroke="color-mix(in oklab, var(--ink) 30%, transparent)" vectorEffect="non-scaling-stroke" />
             <circle cx={x(hover)} cy={y(data[hover].revenue)} r={5} fill="white" stroke="var(--accent)" strokeWidth={2.5} vectorEffect="non-scaling-stroke" />
           </>
         )}
@@ -91,7 +103,7 @@ function RevenueChart({ data, currency }: { data: { date: Date; revenue: number;
         ))}
       </div>
       {h && (
-        <div className="pointer-events-none absolute top-0 rounded-xl bg-[#1d1d1f] px-3 py-2 text-xs text-white shadow-lg" style={{ left: `clamp(0px, calc(${(x(hover!) / W) * 100}% - 60px), calc(100% - 130px))` }}>
+        <div className="pointer-events-none absolute top-0 rounded-[8px] bg-[var(--ink)] px-3 py-2 text-xs text-white shadow-lg" style={{ left: `clamp(0px, calc(${(x(hover!) / W) * 100}% - 60px), calc(100% - 130px))` }}>
           <div className="font-semibold">{money(h.revenue, currency)}</div>
           <div className="text-white/60">
             {h.orders} orders · {h.date.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
@@ -138,7 +150,7 @@ export default function Dashboard() {
   return (
     <div>
       <PageHeader
-        title={`${greet} ☕`}
+        title={`${greet}.`}
         subtitle={new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
         actions={
           <Link href="/admin/orders/board">
@@ -149,7 +161,7 @@ export default function Dashboard() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[var(--a-line)] bg-[var(--a-line)] xl:grid-cols-4">
         <Kpi i={0} icon={Wallet} label="Revenue today" value={money(stats.today.revenue, currency)} sub={<><Delta v={stats.today.change} /> vs yesterday</>} />
         <Kpi i={1} icon={TrendingUp} label="Last 7 days" value={money(stats.week.revenue, currency)} sub={<><Delta v={stats.week.change} /> vs prev. week</>} />
         <Kpi i={2} icon={Receipt} label="Orders · 30d" value={String(stats.month.count)} sub={<>AOV {money(stats.month.aov, currency)} · <Delta v={stats.month.change} /></>} />
@@ -161,15 +173,17 @@ export default function Dashboard() {
           className="xl:col-span-2"
           title={
             <div>
-              <div>Revenue</div>
-              <div className="mt-0.5 text-2xl font-semibold tabular-nums">{money(stats.series.reduce((a, b) => a + b.revenue, 0), currency)}</div>
+              <div>
+                <span className="text-[var(--accent)]">(05)</span> Revenue
+              </div>
+              <div className="display a-num mt-2 text-3xl normal-case tracking-normal">{money(stats.series.reduce((a, b) => a + b.revenue, 0), currency)}</div>
             </div>
           }
           action={<Segmented value={range} onChange={setRange} options={[{ value: "7", label: "7D" }, { value: "14", label: "14D" }, { value: "30", label: "30D" }]} />}
         >
           <RevenueChart key={range} data={stats.series} currency={currency} />
         </Card>
-        <Card title="Fulfilment mix">
+        <Card title={<><span className="text-[var(--accent)]">(06)</span> Fulfilment mix</>}>
           <div className="space-y-4">
             {stats.fulfil.map(({ f, n }, i) => (
               <div key={f}>
@@ -179,10 +193,10 @@ export default function Dashboard() {
                     {n} · {Math.round((n / totalF) * 100)}%
                   </span>
                 </div>
-                <div className="h-2.5 overflow-hidden rounded-full bg-black/[0.05]">
+                <div className="h-2 overflow-hidden bg-[var(--a-line)]">
                   <motion.div
-                    className="h-full rounded-full"
-                    style={{ background: i === 0 ? "var(--accent)" : i === 1 ? "#1d1d1f" : "#a1a1a6" }}
+                    className="h-full"
+                    style={{ background: i === 0 ? "var(--accent)" : i === 1 ? "var(--ink)" : "color-mix(in oklab, var(--ink) 30%, transparent)" }}
                     initial={{ width: 0 }}
                     animate={{ width: `${(n / totalF) * 100}%` }}
                     transition={{ duration: 1, delay: 0.2 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -192,17 +206,17 @@ export default function Dashboard() {
             ))}
           </div>
           <div className="mt-6 border-t border-[var(--a-line)] pt-4">
-            <div className="mb-3 text-[13px] font-medium text-[var(--a-muted)]">Top sellers · 30 days</div>
+            <div className="a-label mb-3 text-[var(--a-muted)]">Top sellers · 30 days</div>
             <div className="space-y-3">
               {stats.top.map((p, i) => (
                 <div key={p.id} className="flex items-center gap-3">
-                  <span className="w-4 text-xs text-[var(--a-muted)]">{i + 1}</span>
+                  <span className="a-num w-5 text-xs font-bold text-[var(--a-muted)]">{String(i + 1).padStart(2, "0")}</span>
                   <Thumb src={p.image} className="size-9" />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-medium">{p.name}</div>
                     <div className="text-xs text-[var(--a-muted)]">{p.qty} sold</div>
                   </div>
-                  <div className="text-sm tabular-nums">{money(p.revenue, currency)}</div>
+                  <div className="text-sm font-bold tabular-nums">{money(p.revenue, currency)}</div>
                 </div>
               ))}
             </div>
@@ -211,7 +225,7 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-3">
-        <Card className="xl:col-span-2" pad={false} title={<span className="flex items-center gap-2">Live queue <Badge tone="accent">{stats.live.length}</Badge></span>} action={<Link href="/admin/orders" className="pr-5 text-sm text-[var(--accent)]">All orders</Link>}>
+        <Card className="xl:col-span-2" pad={false} title={<span className="flex items-center gap-2"><span className="text-[var(--accent)]">(07)</span> Live queue <Badge tone="accent">{stats.live.length}</Badge></span>} action={<Link href="/admin/orders" className="text-sm font-semibold text-[var(--accent)]">All orders ↗</Link>}>
           {stats.live.length === 0 ? (
             <EmptyState icon={<Receipt className="size-5" />} title="All caught up" text="New orders will appear here instantly." />
           ) : (
@@ -222,7 +236,7 @@ export default function Dashboard() {
                   <motion.div layout key={o.id} className="flex flex-wrap items-center gap-3 px-5 py-3.5">
                     <Link href={`/admin/orders/${o.id}`} className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{o.number}</span>
+                        <span className="font-bold a-num">{o.number}</span>
                         <StatusPill status={o.status} />
                       </div>
                       <div className="mt-0.5 truncate text-xs text-[var(--a-muted)]">
@@ -252,16 +266,16 @@ export default function Dashboard() {
           )}
         </Card>
         <div className="space-y-4">
-          <Card title="Upcoming tables" action={<Link href="/admin/reservations" className="text-sm text-[var(--accent)]">View</Link>}>
+          <Card title={<><span className="text-[var(--accent)]">(08)</span> Upcoming tables</>} action={<Link href="/admin/reservations" className="text-sm font-semibold text-[var(--accent)]">View ↗</Link>}>
             {stats.upcoming.length === 0 ? (
               <p className="text-sm text-[var(--a-muted)]">No upcoming reservations.</p>
             ) : (
               <div className="space-y-3">
                 {stats.upcoming.map((r) => (
                   <div key={r.id} className="flex items-center gap-3">
-                    <div className="grid w-12 shrink-0 rounded-xl bg-black/[0.04] py-1 text-center">
+                    <div className="grid w-12 shrink-0 rounded-[6px] border border-[var(--a-line)] py-1 text-center">
                       <span className="text-[10px] uppercase text-[var(--a-muted)]">{new Date(r.date).toLocaleDateString("en-IN", { month: "short" })}</span>
-                      <span className="text-base font-semibold leading-tight">{new Date(r.date).getDate()}</span>
+                      <span className="display text-lg leading-tight">{new Date(r.date).getDate()}</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{r.name}</div>
@@ -275,11 +289,11 @@ export default function Dashboard() {
               </div>
             )}
           </Card>
-          <Card title="Inbox" action={<Link href="/admin/inbox" className="text-sm text-[var(--accent)]">Open</Link>}>
+          <Card title={<><span className="text-[var(--accent)]">(09)</span> Inbox</>} action={<Link href="/admin/inbox" className="text-sm font-semibold text-[var(--accent)]">Open ↗</Link>}>
             <div className="space-y-3">
               {messages.slice(0, 3).map((m) => (
                 <Link key={m.id} href="/admin/inbox" className="flex gap-3">
-                  <div className="grid size-9 shrink-0 place-items-center rounded-full bg-black/[0.05] text-sm font-medium">{m.name[0]}</div>
+                  <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[var(--a-line)] text-sm font-medium">{m.name[0]}</div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="truncate text-sm font-medium">{m.name}</span>
@@ -296,7 +310,7 @@ export default function Dashboard() {
               )}
             </div>
           </Card>
-          <Card title="Customers" action={<Link href="/admin/customers" className="text-sm text-[var(--accent)]">CRM</Link>}>
+          <Card title={<><span className="text-[var(--accent)]">(10)</span> Customers</>} action={<Link href="/admin/customers" className="text-sm font-semibold text-[var(--accent)]">CRM ↗</Link>}>
             <div className="flex items-center gap-3">
               <Users className="size-5 text-[var(--accent)]" />
               <div className="text-sm">

@@ -54,7 +54,7 @@ export default function ProductPage() {
   if (!p) {
     return (
       <div className="mx-auto max-w-xl px-5 py-48 text-center">
-        <p className="display text-5xl">{hydrated ? "We couldn’t find that." : "Brewing…"}</p>
+        <p className="display text-5xl uppercase">{hydrated ? "We couldn’t find that." : "Brewing…"}</p>
         {hydrated && (
           <Link href="/menu" className="mt-6 inline-block rounded-full bg-ink px-6 py-3 text-sm text-bg">
             Back to the menu
@@ -73,7 +73,7 @@ export default function ProductPage() {
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pb-16 pt-20 sm:px-8 lg:pt-24">
-        <nav className="eyebrow mb-6 flex gap-2 text-muted">
+        <nav className="mb-6 flex gap-2 border-t border-ink/10 pt-4 text-[13px] font-semibold text-muted">
           <Link href={p.type === "menu" ? "/menu" : "/shop"} className="hover:text-ink">
             {p.type === "menu" ? "Menu" : "Shop"}
           </Link>
@@ -107,7 +107,7 @@ export default function ProductPage() {
 
           <div>
             <Reveal>
-              <h1 className="display text-[clamp(2.8rem,6vw,5rem)]">{p.name}</h1>
+              <h1 className="display text-[clamp(2.3rem,5vw,4.2rem)] uppercase">{p.name}</h1>
               <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted">
                 <span className="flex items-center gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -166,7 +166,7 @@ export default function ProductPage() {
             )}
             {p.stock > 0 && p.stock < 15 && <p className="mt-4 text-sm text-accent">Only {p.stock} left today</p>}
 
-            <div className="mt-6 flex items-center gap-3 rounded-2xl bg-soft p-4 text-sm">
+            <div className="mt-6 flex items-center gap-3 border-y border-ink/10 py-4 text-sm">
               <Truck className="size-5 shrink-0 text-accent" />
               {p.type === "menu" ? "Ready for pickup in ~10 minutes, or delivered within 6 km." : "Ships within 48 hours of roasting. Free delivery over ₹799."}
             </div>
@@ -195,9 +195,10 @@ export default function ProductPage() {
       <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
-            <h2 className="display text-5xl">Reviews</h2>
+            <p className="text-[13px] font-semibold"><span className="text-accent">(★)</span> <span className="text-muted">Reviews</span></p>
+            <h2 className="display mt-3 text-5xl uppercase">What people say</h2>
             <div className="mt-4 flex items-end gap-3">
-              <span className="display text-7xl">{p.rating.toFixed(1)}</span>
+              <span className="display text-8xl">{p.rating.toFixed(1)}</span>
               <span className="pb-3 text-sm text-muted">out of 5 · {p.reviewCount + reviews.length} reviews</span>
             </div>
             <form
@@ -207,7 +208,7 @@ export default function ProductPage() {
                 addReview({ productId: p.id, ...rv });
                 setRvSent(true);
               }}
-              className="mt-8 space-y-3 rounded-card bg-surface p-5 ring-1 ring-line"
+              className="mt-8 space-y-4 border-t border-ink/10 pt-6"
             >
               {rvSent ? (
                 <p className="py-6 text-center text-sm">Thank you! Your review will appear once our team approves it.</p>
@@ -223,7 +224,7 @@ export default function ProductPage() {
                   </div>
                   <input className="field" placeholder="Your name" value={rv.name} onChange={(e) => setRv({ ...rv, name: e.target.value })} />
                   <textarea className="field min-h-24" placeholder="What did you think?" value={rv.text} onChange={(e) => setRv({ ...rv, text: e.target.value })} />
-                  <button className="h-12 w-full rounded-full bg-ink text-sm font-medium text-bg">Submit review</button>
+                  <button className="h-12 w-full rounded-full bg-ink text-sm font-semibold text-bg transition hover:bg-accent">Submit review</button>
                 </>
               )}
             </form>
@@ -250,7 +251,8 @@ export default function ProductPage() {
 
       {related.length > 0 && (
         <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
-          <h2 className="display text-5xl">
+          <p className="border-t border-ink/10 pt-4 text-[13px] font-semibold"><span className="text-accent">(+)</span> <span className="text-muted">Pairs well</span></p>
+          <h2 className="display mt-3 text-[clamp(2.2rem,6vw,4.5rem)] uppercase">
             You might <em>also like</em>
           </h2>
           {p.type === "shop" ? (

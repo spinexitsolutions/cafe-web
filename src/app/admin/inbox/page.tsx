@@ -50,7 +50,7 @@ export default function InboxPage() {
             ) : (
               <div className="divide-y divide-[var(--a-line)]">
                 {list.map((m) => (
-                  <button key={m.id} onClick={() => open(m)} className={cn("flex w-full gap-3 px-4 py-3.5 text-left transition", sel === m.id ? "bg-[color-mix(in_oklab,var(--accent)_8%,white)]" : "hover:bg-black/[0.02]")}>
+                  <button key={m.id} onClick={() => open(m)} className={cn("flex w-full gap-3 px-4 py-3.5 text-left transition", sel === m.id ? "bg-[color-mix(in_oklab,var(--accent)_8%,white)]" : "hover:bg-[var(--accent)]/[0.02]")}>
                     <div className="relative">
                       <Avatar name={m.name} />
                       {m.status === "new" && <span className="absolute -left-1 top-0 size-2.5 rounded-full bg-[var(--accent)] ring-2 ring-white" />}
@@ -84,7 +84,7 @@ export default function InboxPage() {
                     </div>
                     <StatusPill status={current.status} />
                   </div>
-                  <div className="mt-5 flex items-center gap-3 rounded-2xl bg-black/[0.03] p-3">
+                  <div className="mt-5 flex items-center gap-3 rounded-[10px] bg-[var(--a-line)] p-3">
                     <Avatar name={current.name} />
                     <div className="min-w-0 flex-1 text-sm">
                       <div className="font-medium">{current.name}</div>

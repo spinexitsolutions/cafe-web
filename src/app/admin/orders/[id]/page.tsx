@@ -90,7 +90,7 @@ export default function OrderDetail() {
                       animate={{ scale: i === stepIndex ? 1.15 : 1 }}
                       className={cn(
                         "grid size-8 place-items-center rounded-full border-2 text-xs font-semibold transition-colors",
-                        i <= stepIndex ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-black/10 bg-white text-[var(--a-muted)] group-hover:border-[var(--accent)]",
+                        i <= stepIndex ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--a-line)] bg-white text-[var(--a-muted)] group-hover:border-[var(--accent)]",
                       )}
                     >
                       {i < stepIndex ? <Check className="size-4" /> : i + 1}
@@ -98,7 +98,7 @@ export default function OrderDetail() {
                     <span className="hidden text-[11px] capitalize text-[var(--a-muted)] sm:block">{s.replace(/-/g, " ")}</span>
                   </button>
                   {i < flow.length - 1 && (
-                    <div className="mx-1 h-0.5 flex-1 overflow-hidden rounded bg-black/10 sm:mb-5">
+                    <div className="mx-1 h-0.5 flex-1 overflow-hidden rounded bg-[var(--a-line)] sm:mb-5">
                       <motion.div className="h-full bg-[var(--accent)]" initial={false} animate={{ width: i < stepIndex ? "100%" : "0%" }} transition={{ duration: 0.5 }} />
                     </div>
                   )}

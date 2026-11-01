@@ -1,39 +1,59 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Clock, Mail, MapPin, MessageCircle, Phone, Plus } from "lucide-react";
+import { ArrowUpRight, Check, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Reveal } from "@/components/motion/Reveal";
+import { RollText, SectionHead } from "@/components/motion/Kit";
 import { PageHero } from "@/components/site/PageHero";
 import { cn, openStatus, to12h } from "@/lib/utils";
 import { useDB } from "@/store/db";
+
+const SUBJECTS = ["General enquiry", "Catering", "Private event", "Wholesale", "Careers"];
+const wrap = "px-5 sm:px-8 lg:px-12";
 
 export default function ContactPage() {
   const site = useDB((s) => s.settings.site);
   const faqs = useDB((s) => s.faqs);
   const sendMessage = useDB((s) => s.sendMessage);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "General enquiry", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: SUBJECTS[0], message: "" });
   const [sent, setSent] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState<{ open: boolean; label: string } | null>(null);
   const [today, setToday] = useState("");
   useEffect(() => {
-    setStatus(openStatus(site.hours).label);
+    setStatus(openStatus(site.hours));
     setToday(new Date().toLocaleDateString("en-US", { weekday: "long" }));
   }, [site.hours]);
+
+  const channels: [string, string, string][] = [
+    ["Visit", `${site.address}, ${site.city}`, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapQuery)}`],
+    ["Call", site.phone, `tel:${site.phone}`],
+    ["Email", site.email, `mailto:${site.email}`],
+    ["WhatsApp", "Message us", `https://wa.me/${site.whatsapp}`],
+    ["Instagram", `@${site.instagram}`, `https://instagram.com/${site.instagram}`],
+  ];
 
   return (
     <>
       <PageHero eyebrow="Contact" title="Say" italic="hello." intro="Catering, collaborations, wholesale or just a question about beans — we read everything and reply within a day." />
-      <div className="mx-auto grid max-w-7xl gap-6 px-5 pb-16 sm:px-8 lg:grid-cols-[1.2fr_1fr]">
-        <Reveal className="rounded-card bg-surface p-6 ring-1 ring-line sm:p-8">
+
+      <div className={`${wrap} grid gap-16 pb-8 lg:grid-cols-12 lg:gap-12`}>
+        {/* Form */}
+        <section className="lg:col-span-7">
+          <SectionHead n={1} label="Write to us" title="" />
           <AnimatePresence mode="wait">
             {sent ? (
-              <motion.div key="ok" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex min-h-[420px] flex-col items-center justify-center text-center">
-                <span className="grid size-16 place-items-center rounded-full bg-emerald-500 text-white"><Check className="size-8" /></span>
-                <p className="display mt-6 text-5xl">Message sent.</p>
-                <p className="mt-2 text-muted">Thanks, {form.name.split(" ")[0]}. We’ll get back to you at {form.email}.</p>
-                <button onClick={() => { setSent(false); setForm({ ...form, message: "" }); }} className="mt-6 text-sm underline underline-offset-4">Send another</button>
+              <motion.div key="ok" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="py-16">
+                <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 15 }} className="grid size-14 place-items-center rounded-full bg-accent text-white">
+                  <Check className="size-7" />
+                </motion.span>
+                <p className="display mt-6 text-5xl uppercase">Message sent.</p>
+                <p className="mt-3 text-muted">
+                  Thanks, {form.name.split(" ")[0]}. We’ll reply to {form.email} within a day.
+                </p>
+                <button onClick={() => { setSent(false); setForm({ ...form, message: "" }); }} className="group mt-6 border-b border-ink/25 pb-1 text-sm font-semibold">
+                  <RollText>Send another</RollText>
+                </button>
               </motion.div>
             ) : (
               <motion.form
@@ -45,75 +65,89 @@ export default function ContactPage() {
                   sendMessage({ ...form, phone: form.phone || undefined });
                   setSent(true);
                 }}
-                className="grid gap-3 sm:grid-cols-2"
+                className="pt-6"
               >
-                <div className="flex flex-wrap gap-2 sm:col-span-2">
-                  {["General enquiry", "Catering", "Private event", "Wholesale", "Careers"].map((s) => (
-                    <button type="button" key={s} onClick={() => setForm({ ...form, subject: s })} className={cn("rounded-full px-4 py-2 text-sm ring-1 transition", form.subject === s ? "bg-ink text-bg ring-ink" : "ring-line")}>{s}</button>
+                <p className="text-[12px] font-semibold text-muted">What’s it about?</p>
+                <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+                  {SUBJECTS.map((s) => (
+                    <button type="button" key={s} onClick={() => setForm({ ...form, subject: s })} className={cn("relative pb-1.5 text-[15px] font-semibold transition-colors", form.subject === s ? "text-ink" : "text-muted hover:text-ink")}>
+                      {s}
+                      {form.subject === s && <motion.span layoutId="subject" className="absolute inset-x-0 bottom-0 h-[2px] bg-accent" />}
+                    </button>
                   ))}
                 </div>
-                <input required className="field" placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                <input className="field" type="tel" placeholder="Phone (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                <input required type="email" className="field sm:col-span-2" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                <textarea required className="field min-h-40 sm:col-span-2" placeholder="How can we help?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-                <button className="h-14 rounded-full bg-ink font-medium text-bg transition hover:bg-accent sm:col-span-2">Send message</button>
+                <div className="mt-8 grid gap-x-6 gap-y-6 sm:grid-cols-2">
+                  <input required className="field" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                  <input className="field" type="tel" placeholder="Phone (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <input required type="email" className="field sm:col-span-2" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                  <textarea required rows={4} className="field sm:col-span-2" placeholder="How can we help?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+                </div>
+                <button className="group mt-8 flex h-12 items-center gap-3 rounded-full bg-ink pl-6 pr-1.5 text-sm font-semibold text-bg transition hover:bg-accent">
+                  <RollText>Send message</RollText>
+                  <span className="grid size-9 place-items-center rounded-full bg-bg/15 transition-transform duration-500 group-hover:rotate-45">
+                    <ArrowUpRight className="size-4" />
+                  </span>
+                </button>
               </motion.form>
             )}
           </AnimatePresence>
-        </Reveal>
+        </section>
 
-        <div className="space-y-4">
-          <Reveal delay={0.05} className="overflow-hidden rounded-card ring-1 ring-line">
-            <iframe
-              title="Map"
-              src={`https://www.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&output=embed`}
-              className="h-64 w-full grayscale-[40%]"
-              loading="lazy"
-            />
-          </Reveal>
-          <Reveal delay={0.1} className="grid grid-cols-2 gap-3">
-            {[
-              [MapPin, `${site.address}, ${site.city}`, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapQuery)}`],
-              [Phone, site.phone, `tel:${site.phone}`],
-              [Mail, site.email, `mailto:${site.email}`],
-              [MessageCircle, "WhatsApp us", `https://wa.me/${site.whatsapp}`],
-            ].map(([Icon, t, href]) => {
-              const I = Icon as React.ElementType;
-              return (
-                <a key={t as string} href={href as string} target="_blank" rel="noreferrer" className="rounded-2xl bg-surface p-4 text-sm ring-1 ring-line transition hover:ring-accent">
-                  <I className="size-5 text-accent" />
-                  <p className="mt-3 break-words">{t as string}</p>
+        {/* Channels + hours */}
+        <aside className="lg:col-span-5">
+          <SectionHead n={2} label="Find us" title="" />
+          <ul className="pt-2">
+            {channels.map(([k, v, href]) => (
+              <li key={k} className="border-b border-ink/10">
+                <a href={href} target="_blank" rel="noreferrer" className="group grid grid-cols-[6rem_1fr_auto] items-center gap-3 py-4">
+                  <span className="text-[12px] font-semibold text-muted">{k}</span>
+                  <span className="truncate font-semibold transition-colors group-hover:text-accent">{v}</span>
+                  <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
                 </a>
-              );
-            })}
-          </Reveal>
-          <Reveal delay={0.15} className="rounded-card bg-surface p-5 ring-1 ring-line">
-            <p className="flex items-center gap-2 font-medium"><Clock className="size-4 text-accent" /> {status}</p>
-            <ul className="mt-4 space-y-1.5 text-sm">
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-10 bg-ink p-6 text-bg">
+            <p className="flex items-center gap-2 text-sm font-semibold">
+              <span className={cn("size-2 rounded-full", status?.open ? "bg-emerald-400" : "bg-bg/30")} />
+              {status?.label}
+            </p>
+            <ul className="mt-5 space-y-2 text-sm">
               {site.hours.map((h) => (
-                <li key={h.day} className={cn("flex justify-between", h.day === today ? "font-medium text-ink" : "text-muted")}>
-                  <span>{h.day}</span>
-                  <span>{h.closed ? "Closed" : `${to12h(h.open)} – ${to12h(h.close)}`}</span>
+                <li key={h.day} className={cn("flex items-baseline gap-2", h.day === today ? "text-bg" : "text-bg/55")}>
+                  <span className={cn(h.day === today && "font-semibold")}>{h.day}</span>
+                  <span className="h-0 flex-1 translate-y-[-0.2em] border-b border-dotted border-bg/20" />
+                  <span className="tabular-nums">{h.closed ? "Closed" : `${to12h(h.open)} – ${to12h(h.close)}`}</span>
                 </li>
               ))}
             </ul>
-          </Reveal>
-        </div>
+          </div>
+          <div className="mt-4 overflow-hidden rounded-[var(--radius)] border border-ink/10">
+            <iframe title="Map" src={`https://www.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&output=embed`} className="h-60 w-full grayscale" loading="lazy" />
+          </div>
+        </aside>
       </div>
 
-      <section className="mx-auto max-w-4xl px-5 py-16 sm:px-8 sm:pb-28">
-        <h2 className="display text-[clamp(2.8rem,7vw,5rem)]">Good <em>questions</em></h2>
-        <div className="mt-8 divide-y divide-line border-y border-line">
-          {faqs.map((f) => (
-            <div key={f.id}>
-              <button onClick={() => setOpen(open === f.id ? null : f.id)} className="flex w-full items-center justify-between gap-4 py-6 text-left">
-                <span className="text-lg font-medium">{f.q}</span>
-                <Plus className={cn("size-5 shrink-0 transition duration-500", open === f.id && "rotate-45 text-accent")} />
+      {/* FAQ */}
+      <section className={`${wrap} py-24`}>
+        <SectionHead n={3} label="FAQ" title="Good" accent="questions." />
+        <div className="mt-8">
+          {faqs.map((f, i) => (
+            <div key={f.id} className="border-b border-ink/10 first:border-t">
+              <button onClick={() => setOpen(open === f.id ? null : f.id)} className="group grid w-full grid-cols-[2.5rem_1fr_auto] items-center gap-3 py-5 text-left md:grid-cols-12">
+                <span className="text-[12px] font-bold tabular-nums text-muted md:col-span-3">{String(i + 1).padStart(2, "0")}</span>
+                <span className="text-lg font-semibold transition-colors group-hover:text-accent md:col-span-8 md:text-xl">{f.q}</span>
+                <span className={cn("grid size-9 place-items-center rounded-full ring-1 ring-ink/15 transition duration-500 md:col-span-1 md:justify-self-end", open === f.id && "rotate-45 bg-accent text-white ring-accent")}>
+                  <Plus className="size-4" />
+                </span>
               </button>
               <AnimatePresence initial={false}>
                 {open === f.id && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-                    <p className="max-w-2xl pb-6 text-muted">{f.a}</p>
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
+                    <div className="grid pb-6 md:grid-cols-12">
+                      <p className="max-w-2xl text-muted md:col-span-8 md:col-start-4">{f.a}</p>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -12,12 +12,12 @@ import type { Order, OrderStatus } from "@/lib/types";
 import { cn, money, timeAgo } from "@/lib/utils";
 
 const COL_TONE: Record<string, string> = {
-  pending: "#ff9f0a",
-  confirmed: "#0a84ff",
-  preparing: "#af52de",
-  ready: "#30b0c7",
-  "out-for-delivery": "#5e5ce6",
-  completed: "#34c759",
+  pending: "#b0861f",
+  confirmed: "var(--accent)",
+  preparing: "#5b3fa8",
+  ready: "#1f7480",
+  "out-for-delivery": "#2f3a8f",
+  completed: "#1f6b42",
 };
 
 function prevStatus(o: Order): OrderStatus | null {
@@ -57,8 +57,8 @@ export default function Board() {
         subtitle={
           <span className="inline-flex items-center gap-2">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#34c759] opacity-60" />
-              <span className="relative inline-flex size-2 rounded-full bg-[#34c759]" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[var(--accent)] opacity-60" />
+              <span className="relative inline-flex size-2 rounded-full bg-[var(--accent)]" />
             </span>
             Live · new orders from the website appear here automatically
           </span>
@@ -69,11 +69,11 @@ export default function Board() {
         {cols.map((c) => {
           const list = (c === "completed" ? todayDone : orders.filter((o) => o.status === c)).slice(0, 30);
           return (
-            <div key={c} className="flex w-[82vw] max-w-[300px] shrink-0 snap-start flex-col rounded-2xl bg-black/[0.035] p-2 sm:w-[280px]">
+            <div key={c} className="flex w-[82vw] max-w-[300px] shrink-0 snap-start flex-col rounded-[10px] bg-[var(--a-line)] p-2 sm:w-[280px]">
               <div className="flex items-center gap-2 px-2 py-2">
                 <span className="size-2.5 rounded-full" style={{ background: COL_TONE[c] }} />
                 <span className="text-sm font-semibold capitalize">{c.replace(/-/g, " ")}</span>
-                <span className="ml-auto rounded-full bg-white px-2 text-xs font-medium tabular-nums shadow-sm">{list.length}</span>
+                <span className="ml-auto rounded-full bg-white px-2 text-xs font-medium tabular-nums">{list.length}</span>
               </div>
               <div className="min-h-32 space-y-2">
                 <AnimatePresence initial={false}>
@@ -91,7 +91,7 @@ export default function Board() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 420, damping: 36 }}
-                        className="rounded-xl bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]"
+                        className="rounded-[8px] bg-white p-3 ring-1 ring-[var(--a-line)]"
                       >
                         <div className="flex items-center justify-between">
                           <Link href={`/admin/orders/${o.id}`} className="text-sm font-semibold hover:text-[var(--accent)]">
@@ -113,9 +113,9 @@ export default function Board() {
                             </li>
                           ))}
                         </ul>
-                        {o.notes && <p className="mt-2 rounded-lg bg-[#ff9f0a]/10 px-2 py-1 text-xs text-[#8a5300]">“{o.notes}”</p>}
+                        {o.notes && <p className="mt-2 rounded-lg bg-[#b0861f]/10 px-2 py-1 text-xs text-[#6b5013]">“{o.notes}”</p>}
                         <div className="mt-3 flex items-center gap-1.5">
-                          <button disabled={!pv || c === "completed"} onClick={() => move(o, pv)} className="grid size-8 place-items-center rounded-full bg-black/[0.04] disabled:opacity-30" aria-label="Move back">
+                          <button disabled={!pv || c === "completed"} onClick={() => move(o, pv)} className="grid size-8 place-items-center rounded-full bg-[var(--a-line)] disabled:opacity-30" aria-label="Move back">
                             <ChevronLeft className="size-4" />
                           </button>
                           {nx ? (
@@ -130,7 +130,7 @@ export default function Board() {
                     );
                   })}
                 </AnimatePresence>
-                {list.length === 0 && <div className="grid h-24 place-items-center rounded-xl border border-dashed border-black/10 text-xs text-[var(--a-muted)]">Empty</div>}
+                {list.length === 0 && <div className="grid h-24 place-items-center rounded-[8px] border border-dashed border-[var(--a-line)] text-xs text-[var(--a-muted)]">Empty</div>}
               </div>
             </div>
           );

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useAdmin } from "@/store/admin";
+import "./admin.css";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const path = usePathname();
@@ -25,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!ready || !authed)
     return (
       <div className="admin grid min-h-dvh place-items-center">
-        <div className="size-6 animate-spin rounded-full border-2 border-black/10 border-t-[var(--accent)]" />
+        <div className="size-6 animate-spin rounded-full border-2 border-[var(--a-line)] border-t-[var(--accent)]" />
       </div>
     );
   return <AdminShell>{children}</AdminShell>;

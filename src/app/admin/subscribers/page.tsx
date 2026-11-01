@@ -40,7 +40,7 @@ export default function SubscribersPage() {
           <div className="divide-y divide-[var(--a-line)]">
             {list.map((s) => (
               <div key={s.id} className="flex items-center gap-3 px-5 py-3">
-                <div className="grid size-9 place-items-center rounded-full bg-black/[0.04]">
+                <div className="grid size-9 place-items-center rounded-full bg-[var(--a-line)]">
                   <Mail className="size-4 text-[var(--a-muted)]" />
                 </div>
                 <div className="min-w-0 flex-1">

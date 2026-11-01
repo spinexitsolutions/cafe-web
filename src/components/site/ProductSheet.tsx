@@ -103,7 +103,7 @@ export function ProductSheet() {
           <motion.div
             role="dialog"
             aria-label={p.name}
-            className="fixed inset-x-0 bottom-0 z-[91] mx-auto flex max-h-[94dvh] max-w-2xl flex-col overflow-hidden rounded-t-[32px] bg-bg sm:bottom-6 sm:rounded-[32px]"
+            className="fixed inset-x-0 bottom-0 z-[91] mx-auto flex max-h-[94dvh] max-w-2xl flex-col overflow-hidden rounded-t-[18px] bg-bg sm:bottom-6 sm:rounded-[14px]"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
@@ -124,7 +124,7 @@ export function ProductSheet() {
                 </button>
               </div>
               <div className="-mt-10 px-6 pb-6">
-                <h3 className="display relative text-4xl">{p.name}</h3>
+                <h3 className="display relative text-4xl uppercase">{p.name}</h3>
                 <p className="mt-2 text-muted">{p.description}</p>
                 {p.notes && <p className="eyebrow mt-3 text-accent">{p.notes}</p>}
                 <div className="mt-6">

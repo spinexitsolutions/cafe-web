@@ -94,7 +94,7 @@ export default function StoreSettings() {
             <Field label="Meta description" hint={`${draft.seo.description.length}/160`}>
               <Textarea value={draft.seo.description} onChange={(e) => setDraft((d) => ({ ...d, seo: { ...d.seo, description: e.target.value } }))} className="!min-h-16" />
             </Field>
-            <div className="rounded-xl bg-black/[0.03] p-3">
+            <div className="rounded-[8px] bg-[var(--a-line)] p-3">
               <div className="truncate text-[15px] text-[#1a0dab]">{draft.seo.title}</div>
               <div className="text-xs text-[#006621]">auracoffee.in</div>
               <div className="line-clamp-2 text-xs text-[#545454]">{draft.seo.description}</div>

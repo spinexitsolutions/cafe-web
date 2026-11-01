@@ -73,7 +73,7 @@ export default function CustomersPage() {
         {(["lead", "new", "regular", "vip", "inactive"] as CustomerStage[]).map((s) => {
           const n = customers.filter((c) => c.stage === s).length;
           return (
-            <button key={s} onClick={() => setStage(stage === s ? "all" : s)} className={`rounded-2xl border bg-white p-3 text-left transition ${stage === s ? "border-[var(--accent)] ring-2 ring-[color-mix(in_oklab,var(--accent)_20%,transparent)]" : "border-[var(--a-line)] hover:border-black/15"}`}>
+            <button key={s} onClick={() => setStage(stage === s ? "all" : s)} className={`rounded-[10px] border bg-white p-3 text-left transition ${stage === s ? "border-[var(--accent)] ring-2 ring-[color-mix(in_oklab,var(--accent)_20%,transparent)]" : "border-[var(--a-line)] hover:border-black/15"}`}>
               <div className="text-[11px] font-medium uppercase tracking-wide text-[var(--a-muted)]">{s}</div>
               <div className="mt-1 text-xl font-semibold tabular-nums sm:text-2xl">{n}</div>
             </button>
@@ -94,7 +94,7 @@ export default function CustomersPage() {
           <>
             <Table head={["Customer", "Stage", "Tags", "Orders", "Lifetime value", "Points", "Last active"]}>
               {rows.map(({ c, s }) => (
-                <tr key={c.id} onClick={() => router.push(`/admin/customers/${c.id}`)} className="cursor-pointer hover:bg-black/[0.02]">
+                <tr key={c.id} onClick={() => router.push(`/admin/customers/${c.id}`)} className="cursor-pointer hover:bg-[var(--accent)]/[0.02]">
                   <Td>
                     <div className="flex items-center gap-3">
                       <Avatar name={c.name} />

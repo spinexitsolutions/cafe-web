@@ -40,10 +40,10 @@ function MiniPreview({ intro, run }: { intro: Intro; run: number }) {
   }, [run, intro.duration, intro.words.length]);
 
   return (
-    <div className="relative aspect-[9/14] overflow-hidden rounded-2xl ring-1 ring-black/10 sm:aspect-[4/3]" style={{ background: theme.background }}>
+    <div className="relative aspect-[9/14] overflow-hidden rounded-[10px] ring-1 ring-[var(--a-line)] sm:aspect-[4/3]" style={{ background: theme.background }}>
       <div className="absolute inset-0 grid place-items-center" style={{ color: theme.ink, fontFamily: "var(--font-display-active)" }}>
-        <span className="text-3xl">
-          Coffee, made <em style={{ color: theme.accent }}>slowly.</em>
+        <span className="display text-3xl uppercase">
+          Coffee is <span style={{ color: theme.accent }}>a fruit.</span>
         </span>
       </div>
       <AnimatePresence>
@@ -130,7 +130,7 @@ export default function IntroPage() {
           <Card title="Style">
             <div className="grid gap-3 sm:grid-cols-3">
               {STYLES.map((s) => (
-                <button key={s.id} onClick={() => { set({ style: s.id }); setRun((r) => r + 1); }} className={cn("rounded-2xl border p-4 text-left transition", draft.style === s.id ? "border-[var(--accent)] ring-2 ring-[color-mix(in_oklab,var(--accent)_25%,transparent)]" : "border-[var(--a-line)] hover:border-black/20")}>
+                <button key={s.id} onClick={() => { set({ style: s.id }); setRun((r) => r + 1); }} className={cn("rounded-[10px] border p-4 text-left transition", draft.style === s.id ? "border-[var(--accent)] ring-2 ring-[color-mix(in_oklab,var(--accent)_25%,transparent)]" : "border-[var(--a-line)] hover:border-[var(--ink)]")}>
                   <div className="font-medium">{s.name}</div>
                   <div className="mt-1 text-xs text-[var(--a-muted)]">{s.text}</div>
                 </button>
@@ -148,7 +148,7 @@ export default function IntroPage() {
         </div>
         <div className="lg:sticky lg:top-24 lg:self-start">
           <Card title="Preview" action={<Button size="sm" onClick={() => setRun((r) => r + 1)}><Play className="size-3.5" /> Replay</Button>}>
-            {draft.enabled ? <MiniPreview intro={draft} run={run} /> : <div className="grid aspect-[4/3] place-items-center rounded-2xl bg-black/[0.03] text-sm text-[var(--a-muted)]">Intro disabled</div>}
+            {draft.enabled ? <MiniPreview intro={draft} run={run} /> : <div className="grid aspect-[4/3] place-items-center rounded-[10px] bg-[var(--a-line)] text-sm text-[var(--a-muted)]">Intro disabled</div>}
           </Card>
         </div>
       </div>

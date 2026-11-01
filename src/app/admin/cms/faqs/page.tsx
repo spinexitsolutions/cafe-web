@@ -36,7 +36,7 @@ export default function FaqsCMS() {
       ) : (
         <Reorder.Group axis="y" values={faqs} onReorder={(v) => reorder("faqs", v.map((x) => x.id))} className="space-y-2">
           {faqs.map((f) => (
-            <Reorder.Item key={f.id} value={f} className="flex items-start gap-3 rounded-2xl border border-[var(--a-line)] bg-white p-4">
+            <Reorder.Item key={f.id} value={f} className="flex items-start gap-3 rounded-[10px] border border-[var(--a-line)] bg-white p-4">
               <GripVertical className="mt-0.5 size-4 shrink-0 cursor-grab text-black/25" />
               <div className="min-w-0 flex-1">
                 <div className="font-medium">{f.q}</div>

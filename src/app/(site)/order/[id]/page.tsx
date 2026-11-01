@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import type { OrderStatus } from "@/lib/types";
 import { cn, fmtDate, fmtTime, money } from "@/lib/utils";
 import { useDB } from "@/store/db";
+import { Lines, RollText, Rule } from "@/components/motion/Kit";
 
 const FLOW: Record<string, { s: OrderStatus; label: string; icon: React.ElementType }[]> = {
   delivery: [
@@ -33,10 +34,10 @@ export default function OrderPage() {
   const customer = useDB((s) => s.customers.find((c) => c.email === o?.customer.email));
   const cur = site.currency;
 
-  if (!o)
+  if (!o || !hydrated)
     return (
       <div className="mx-auto max-w-xl px-5 py-48 text-center">
-        <p className="display text-5xl">{hydrated ? "Order not found" : "Loading…"}</p>
+        <p className="display text-5xl uppercase">{hydrated ? "Order not found" : "Loading…"}</p>
         {hydrated && <Link href="/account" className="mt-6 inline-block rounded-full bg-ink px-6 py-3 text-sm text-bg">Find my orders</Link>}
       </div>
     );
@@ -47,120 +48,147 @@ export default function OrderPage() {
   const cancelled = o.status === "cancelled";
   const pct = cancelled ? 0 : (Math.max(0, idx) / (flow.length - 1)) * 100;
 
+  const rows: [string, number][] = (
+    [
+      ["Subtotal", o.subtotal],
+      ["Discount", -o.discount],
+      ["GST", o.tax],
+      ["Delivery", o.deliveryFee],
+      ["Tip", o.tip],
+    ] as [string, number][]
+  ).filter(([k, v]) => v !== 0 || k === "Subtotal" || k === "GST");
+  const details: [string, string][] = [
+    ["Placed", `${fmtDate(o.createdAt)} · ${fmtTime(o.createdAt)}`],
+    ["Fulfilment", `${o.fulfillment}${o.scheduledFor ? ` · ${o.scheduledFor}` : " · ASAP"}`],
+    ...(o.address ? ([["Address", o.address]] as [string, string][]) : []),
+    ...(o.tableNo ? ([["Table", o.tableNo]] as [string, string][]) : []),
+    ["Payment", `${o.payment.toUpperCase()} · ${o.paymentStatus}`],
+  ];
+
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-24 pt-20 sm:px-8 lg:pt-24">
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }} className={cn("grid size-16 place-items-center rounded-full text-white", cancelled ? "bg-red-500" : "bg-emerald-500")}>
-        {cancelled ? <XCircle className="size-8" /> : <Check className="size-8" strokeWidth={3} />}
-      </motion.div>
-      <p className="eyebrow mt-6 text-muted">Order {o.number}</p>
-      <h1 className="display mt-2 text-[clamp(2.8rem,8vw,5.5rem)]">
-        {cancelled ? "Order cancelled." : (
-          <>
-            Thank you, <em className="text-accent">{o.customer.name.split(" ")[0]}.</em>
-          </>
-        )}
-      </h1>
-      <p className="mt-3 max-w-lg text-muted">
-        {cancelled
-          ? "This order was cancelled. If you were charged, a refund is on its way."
-          : `We’ve sent a confirmation to ${o.customer.email}. This page updates live as your order moves along.`}
-      </p>
+    <div className="px-5 pb-24 pt-20 sm:px-8 lg:px-12 lg:pt-24">
+      <Rule />
+      <div className="grid gap-4 pt-5 md:grid-cols-12">
+        <div className="md:col-span-3">
+          <p className="text-[13px] font-semibold">
+            <span className="text-accent">({o.number})</span> <span className="text-muted">{cancelled ? "Cancelled" : "Order confirmed"}</span>
+          </p>
+          <motion.div
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.2 }}
+            className={cn("mt-4 grid size-14 place-items-center rounded-full text-white", cancelled ? "bg-red-500" : "bg-accent")}
+          >
+            {cancelled ? <XCircle className="size-7" /> : <Check className="size-7" strokeWidth={3} />}
+          </motion.div>
+        </div>
+        <div className="md:col-span-9">
+          <h1 className="display text-[clamp(2.6rem,9vw,7rem)] uppercase">
+            {cancelled ? (
+              <Lines text="Order cancelled." onMount />
+            ) : (
+              <>
+                <Lines text="Thank you," onMount /> <em><Lines text={`${o.customer.name.split(" ")[0]}.`} onMount delay={0.1} /></em>
+              </>
+            )}
+          </h1>
+          <p className="mt-4 max-w-lg text-muted">
+            {cancelled ? "If you were charged, a refund is on its way." : `Confirmation sent to ${o.customer.email}. This page updates live as the café moves your order along.`}
+          </p>
+        </div>
+      </div>
 
       {!cancelled && (
-        <div className="mt-10 rounded-card bg-surface p-5 ring-1 ring-line sm:p-8">
-          <div className="flex items-center justify-between">
-            <p className="font-medium">{flow[Math.max(0, idx)]?.label}</p>
-            <span className="relative flex size-2.5">
-              <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400" />
-              <span className="relative size-2.5 rounded-full bg-emerald-500" />
+        <section className="mt-14">
+          <div className="flex items-center justify-between pb-3 text-[13px] font-semibold">
+            <span className="flex items-center gap-2">
+              <span className="relative flex size-2">
+                <span className="absolute inset-0 animate-ping rounded-full bg-accent" />
+                <span className="relative size-2 rounded-full bg-accent" />
+              </span>
+              Live · {flow[Math.max(0, idx)]?.label}
             </span>
+            <span className="text-muted">{Math.round(pct)}%</span>
           </div>
-          <div className="relative mt-8">
-            <div className="absolute left-5 right-5 top-5 h-0.5 bg-line" />
-            <motion.div className="absolute left-5 top-5 h-0.5 bg-accent" initial={{ width: 0 }} animate={{ width: `calc((100% - 2.5rem) * ${pct / 100})` }} transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} />
-            <ol className="relative flex justify-between">
-              {flow.map((f, i) => {
-                const done = i <= idx;
-                const Icon = f.icon;
-                return (
-                  <li key={f.s} className="flex w-10 flex-col items-center">
-                    <motion.span
-                      animate={{ scale: i === idx ? [1, 1.12, 1] : 1 }}
-                      transition={{ repeat: i === idx ? Infinity : 0, duration: 1.8 }}
-                      className={cn("grid size-10 place-items-center rounded-full ring-4 ring-surface transition-colors duration-700", done ? "bg-accent text-white" : "bg-soft text-muted")}
-                    >
-                      <Icon className="size-4" />
-                    </motion.span>
-                    <span className={cn("mt-3 w-16 text-center text-[10px] leading-tight sm:w-20 sm:text-xs", done ? "text-ink" : "text-muted")}>{f.label}</span>
-                  </li>
-                );
-              })}
-            </ol>
+          <div className="h-1 bg-ink/10">
+            <motion.div className="h-full bg-accent" initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1] }} />
           </div>
-        </div>
+          <ol className="grid grid-cols-5 gap-px bg-ink/10">
+            {flow.map((f, i) => {
+              const done = i <= idx;
+              const Icon = f.icon;
+              return (
+                <li key={f.s} className={cn("bg-bg px-2 py-4 transition-colors duration-700 sm:px-4", i === idx && "bg-surface")}>
+                  <Icon className={cn("size-5 transition-colors duration-700", done ? "text-accent" : "text-ink/25")} />
+                  <p className={cn("mt-3 text-[11px] font-semibold leading-tight sm:text-sm", done ? "text-ink" : "text-muted")}>{f.label}</p>
+                  <p className="text-[10px] tabular-nums text-muted sm:text-xs">{String(i + 1).padStart(2, "0")}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
       )}
 
-      <div className="mt-6 grid gap-6 md:grid-cols-[1.4fr_1fr]">
-        <div className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-7">
-          <h2 className="font-medium">Items</h2>
-          <ul className="mt-4 divide-y divide-line">
-            {o.items.map((i, k) => (
-              <li key={k} className="flex items-center gap-3 py-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={i.image} alt="" className="size-12 rounded-xl object-cover" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">
-                    {i.qty} × {i.name}
-                  </p>
-                  {i.options.length > 0 && <p className="truncate text-xs text-muted">{i.options.join(" · ")}</p>}
-                </div>
-                <span className="text-sm tabular-nums">{money(i.unitPrice * i.qty, cur)}</span>
-              </li>
+      <div className="mt-14 grid gap-12 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <p className="text-[13px] font-semibold"><span className="text-accent">(01)</span> <span className="text-muted">Details</span></p>
+          <dl className="mt-3">
+            {details.map(([k, v]) => (
+              <div key={k} className="grid grid-cols-[7rem_1fr] border-b border-ink/10 py-3.5 text-sm">
+                <dt className="text-muted">{k}</dt>
+                <dd className="font-semibold capitalize">{v}</dd>
+              </div>
             ))}
-          </ul>
-          <dl className="mt-3 space-y-1.5 border-t border-line pt-4 text-sm">
-            {[
-              ["Subtotal", o.subtotal],
-              ["Discount", -o.discount],
-              ["GST", o.tax],
-              ["Delivery", o.deliveryFee],
-              ["Tip", o.tip],
-            ]
-              .filter(([k, v]) => v !== 0 || k === "Subtotal" || k === "GST")
-              .map(([k, v]) => (
-                <div key={k as string} className="flex justify-between text-muted">
-                  <dt>{k}</dt>
-                  <dd className="tabular-nums">{(v as number) < 0 ? `− ${money(-(v as number), cur)}` : money(v as number, cur)}</dd>
-                </div>
-              ))}
-            <div className="flex justify-between pt-2 text-base font-medium">
-              <dt>Total</dt>
-              <dd className="tabular-nums">{money(o.total, cur)}</dd>
-            </div>
           </dl>
-        </div>
-        <div className="space-y-4">
-          <div className="rounded-card bg-surface p-5 text-sm ring-1 ring-line sm:p-7">
-            <h2 className="font-medium">Details</h2>
-            <dl className="mt-4 space-y-3">
-              <div><dt className="text-muted">Placed</dt><dd>{fmtDate(o.createdAt)} · {fmtTime(o.createdAt)}</dd></div>
-              <div><dt className="text-muted">Fulfilment</dt><dd className="capitalize">{o.fulfillment}{o.scheduledFor ? ` · ${o.scheduledFor}` : " · ASAP"}</dd></div>
-              {o.address && <div><dt className="text-muted">Address</dt><dd>{o.address}</dd></div>}
-              {o.tableNo && <div><dt className="text-muted">Table</dt><dd>{o.tableNo}</dd></div>}
-              <div><dt className="text-muted">Payment</dt><dd className="uppercase">{o.payment} · <span className="capitalize">{o.paymentStatus}</span></dd></div>
-            </dl>
-          </div>
           {customer && (
-            <div className="rounded-card bg-ink p-5 text-bg sm:p-7">
-              <p className="eyebrow text-bg/50">Aura rewards</p>
-              <p className="display mt-2 text-4xl">{customer.points} pts</p>
-              <p className="mt-1 text-sm text-bg/60">{Math.max(0, 100 - (customer.points % 100))} points to your next free drink.</p>
+            <div className="mt-8 grid grid-cols-[1fr_auto] items-end gap-4 bg-ink p-6 text-bg">
+              <div>
+                <p className="text-[12px] font-semibold text-bg/50">Aura rewards</p>
+                <p className="display mt-2 text-5xl">{customer.points} pts</p>
+                <p className="mt-1 text-sm text-bg/60">{Math.max(0, 100 - (customer.points % 100))} points to your next free drink.</p>
+              </div>
+              <Link href="/account" className="group text-sm font-semibold text-accent"><RollText>View →</RollText></Link>
             </div>
           )}
-          <a href={`tel:${site.phone}`} className="flex items-center justify-center gap-2 rounded-full py-4 text-sm font-medium ring-1 ring-line">
-            <Phone className="size-4" /> Need help? Call {site.phone}
+          <a href={`tel:${site.phone}`} className="group mt-6 inline-flex items-center gap-2 border-b border-ink/25 pb-1 text-sm font-semibold">
+            <Phone className="size-4" /> <RollText>{`Need help? ${site.phone}`}</RollText>
           </a>
         </div>
+
+        <aside className="lg:col-span-5">
+          <div className="relative bg-ink p-6 text-bg sm:p-7">
+            <div className="flex items-baseline justify-between">
+              <p className="display text-2xl uppercase">{site.shortName}®</p>
+              <p className="text-[11px] font-semibold text-bg/50">{o.number}</p>
+            </div>
+            <div className="my-5 border-t border-dashed border-bg/25" />
+            <ul className="space-y-3">
+              {o.items.map((it, k) => (
+                <li key={k} className="flex items-baseline gap-2 text-sm">
+                  <span className="tabular-nums text-bg/50">{it.qty}×</span>
+                  <span className="min-w-0 truncate font-semibold">{it.name}</span>
+                  <span className="h-0 flex-1 translate-y-[-0.2em] border-b border-dotted border-bg/25" />
+                  <span className="tabular-nums">{money(it.unitPrice * it.qty, cur)}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="my-5 border-t border-dashed border-bg/25" />
+            <dl className="space-y-2 text-sm">
+              {rows.map(([k, v]) => (
+                <div key={k} className="flex items-baseline gap-2">
+                  <dt className="text-bg/55">{k}</dt>
+                  <span className="h-0 flex-1 translate-y-[-0.2em] border-b border-dotted border-bg/20" />
+                  <dd className="tabular-nums">{v < 0 ? `− ${money(-v, cur)}` : money(v, cur)}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-5 flex items-end justify-between border-t border-bg/20 pt-4">
+              <span className="text-sm font-semibold">Total paid</span>
+              <span className="display text-4xl">{money(o.total, cur)}</span>
+            </div>
+            <div aria-hidden className="absolute inset-x-0 -bottom-[7px] h-[14px]" style={{ background: "radial-gradient(circle at 7px 7px, var(--bg) 6px, transparent 6.5px) repeat-x", backgroundSize: "14px 14px" }} />
+          </div>
+        </aside>
       </div>
     </div>
   );

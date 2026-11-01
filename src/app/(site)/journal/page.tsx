@@ -1,9 +1,10 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Img } from "@/components/motion/Img";
-import { Reveal } from "@/components/motion/Reveal";
+import { ClipImg } from "@/components/motion/Kit";
 import { PageHero } from "@/components/site/PageHero";
 import { cn, fmtDate } from "@/lib/utils";
 import { useDB } from "@/store/db";
@@ -13,46 +14,83 @@ export default function JournalPage() {
   const posts = useMemo(() => all.filter((p) => p.published).sort((a, b) => b.date.localeCompare(a.date)), [all]);
   const tags = useMemo(() => ["All", ...Array.from(new Set(posts.flatMap((p) => p.tags)))], [posts]);
   const [tag, setTag] = useState("All");
+  const [hover, setHover] = useState<string | null>(null);
   const list = posts.filter((p) => tag === "All" || p.tags.includes(tag));
   const [lead, ...rest] = list;
+  const preview = rest.find((p) => p.id === hover) ?? rest[0];
+
   return (
     <>
       <PageHero eyebrow="The journal" title="Notes from" italic="the bar." intro="Brewing guides, farm stories and the occasional love letter to butter." />
-      <div className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
-        <div className="flex flex-wrap gap-2">
+      <div className="px-5 pb-24 sm:px-8 lg:px-12">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 border-b border-ink/10 pb-3">
           {tags.map((t) => (
-            <button key={t} onClick={() => setTag(t)} className={cn("rounded-full px-4 py-2 text-sm ring-1 transition", tag === t ? "bg-ink text-bg ring-ink" : "ring-line")}>{t}</button>
+            <button key={t} onClick={() => setTag(t)} className={cn("relative pb-1.5 text-[15px] font-semibold transition-colors", tag === t ? "text-ink" : "text-muted hover:text-ink")}>
+              {t}
+              {tag === t && <motion.span layoutId="j-tag" className="absolute inset-x-0 -bottom-[13px] h-[3px] bg-accent" />}
+            </button>
           ))}
         </div>
+
         {lead && (
-          <Reveal>
-            <Link href={`/journal/${lead.slug}`} className="group mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-end">
-              <div className="aspect-[16/10] overflow-hidden rounded-card">
-                <Img src={lead.cover} alt={lead.title} className="h-full w-full object-cover transition duration-[1.2s] group-hover:scale-105" />
-              </div>
-              <div>
-                <p className="eyebrow text-muted">{lead.tags.join(" · ")} · {fmtDate(lead.date)}</p>
-                <h2 className="display mt-3 text-5xl leading-[1] transition group-hover:text-accent sm:text-6xl">{lead.title}</h2>
-                <p className="mt-4 text-muted">{lead.excerpt}</p>
-                <p className="mt-4 text-sm">By {lead.author} · {lead.readTime} min read</p>
-              </div>
-            </Link>
-          </Reveal>
+          <Link href={`/journal/${lead.slug}`} className="group mt-10 grid gap-6 lg:grid-cols-12 lg:items-end">
+            <ClipImg src={lead.cover} alt={lead.title} className="aspect-[16/10] rounded-[var(--radius)] lg:col-span-7" />
+            <div className="lg:col-span-5">
+              <p className="text-[12px] font-semibold">
+                <span className="text-accent">(Latest)</span> <span className="text-muted">{lead.tags.join(" · ")} · {fmtDate(lead.date)}</span>
+              </p>
+              <h2 className="display mt-3 text-[clamp(2rem,4.6vw,3.8rem)] uppercase leading-[0.95] transition-colors group-hover:text-accent">{lead.title}</h2>
+              <p className="mt-4 text-muted">{lead.excerpt}</p>
+              <p className="mt-5 text-sm font-semibold">By {lead.author} · {lead.readTime} min read</p>
+            </div>
+          </Link>
         )}
-        <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {rest.map((p, i) => (
-            <Reveal key={p.id} delay={(i % 3) * 0.06}>
-              <Link href={`/journal/${p.slug}`} className="group block">
-                <div className="aspect-[4/3] overflow-hidden rounded-card">
-                  <Img src={p.cover} alt={p.title} className="h-full w-full object-cover transition duration-[1.2s] group-hover:scale-105" />
-                </div>
-                <p className="eyebrow mt-5 text-muted">{p.tags[0]} · {fmtDate(p.date)}</p>
-                <h3 className="display mt-2 text-3xl transition group-hover:text-accent">{p.title}</h3>
-                <p className="mt-2 line-clamp-2 text-sm text-muted">{p.excerpt}</p>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
+
+        {rest.length > 0 && (
+          <div className="mt-20 grid gap-10 lg:grid-cols-12">
+            <ul className="lg:col-span-8" onMouseLeave={() => setHover(null)}>
+              <li className="grid grid-cols-12 border-b border-ink/10 pb-2 text-[11px] font-bold uppercase tracking-wider text-muted">
+                <span className="col-span-2">No.</span>
+                <span className="col-span-7">Title</span>
+                <span className="col-span-3 text-right">Read</span>
+              </li>
+              {rest.map((p, i) => (
+                <li key={p.id} className="border-b border-ink/10">
+                  <Link href={`/journal/${p.slug}`} onMouseEnter={() => setHover(p.id)} className="group grid grid-cols-12 items-baseline gap-2 py-5">
+                    <span className="col-span-2 text-[12px] font-bold tabular-nums text-muted">{String(i + 2).padStart(2, "0")}</span>
+                    <span className="col-span-8 sm:col-span-7">
+                      <span className="display display-n block text-xl uppercase leading-tight transition-[color,transform] duration-500 group-hover:translate-x-2 group-hover:text-accent sm:text-2xl">{p.title}</span>
+                      <span className="mt-1 block text-sm text-muted">
+                        {p.tags[0]} · {fmtDate(p.date)}
+                      </span>
+                    </span>
+                    <span className="col-span-2 flex items-center justify-end gap-2 text-sm font-semibold sm:col-span-3">
+                      <span className="hidden sm:inline">{p.readTime} min</span>
+                      <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="hidden lg:col-span-4 lg:block">
+              <div className="sticky top-24 aspect-[4/5] overflow-hidden rounded-[var(--radius)]">
+                <AnimatePresence initial={false}>
+                  {preview && (
+                    <motion.img
+                      key={preview.id}
+                      src={preview.cover}
+                      alt=""
+                      initial={{ clipPath: "inset(100% 0 0 0)", scale: 1.15 }}
+                      animate={{ clipPath: "inset(0% 0 0 0)", scale: 1 }}
+                      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

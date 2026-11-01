@@ -29,7 +29,7 @@ export default function NavigationPage() {
           </datalist>
           <Reorder.Group axis="y" values={draft.links} onReorder={(links) => setDraft({ ...draft, links })} className="space-y-2">
             {draft.links.map((l) => (
-              <Reorder.Item key={l.id} value={l} className="flex items-center gap-2 rounded-xl border border-[var(--a-line)] bg-white p-2">
+              <Reorder.Item key={l.id} value={l} className="flex items-center gap-2 rounded-[8px] border border-[var(--a-line)] bg-white p-2">
                 <GripVertical className="size-4 shrink-0 cursor-grab text-black/25" />
                 <Input value={l.label} onChange={(e) => setDraft({ ...draft, links: draft.links.map((x) => (x.id === l.id ? { ...x, label: e.target.value } : x)) })} placeholder="Label" />
                 <Input list="pages" value={l.href} onChange={(e) => setDraft({ ...draft, links: draft.links.map((x) => (x.id === l.id ? { ...x, href: e.target.value } : x)) })} placeholder="/page" className="font-mono text-[13px]" />
@@ -55,13 +55,13 @@ export default function NavigationPage() {
             </div>
           </Card>
           <Card title="Preview">
-            <div className="flex items-center justify-between rounded-full bg-[#1d1d1f] py-1.5 pl-4 pr-1.5 text-white">
-              <span className="font-[family-name:var(--font-display-active)] text-lg">aura</span>
+            <div className="flex items-center justify-between rounded-full bg-[var(--ink)] py-1.5 pl-4 pr-1.5 text-white">
+              <span className="display text-lg uppercase">aura®</span>
               <span className="rounded-full bg-[var(--accent)] px-3 py-1.5 text-xs font-medium">{draft.ctaLabel}</span>
             </div>
             <div className="mt-3 space-y-1">
               {draft.links.map((l, i) => (
-                <div key={l.id} className="flex items-baseline gap-3 font-[family-name:var(--font-display-active)] text-2xl">
+                <div key={l.id} className="display flex items-baseline gap-3 text-2xl uppercase">
                   <span className="font-mono text-[10px] text-[var(--a-muted)]">0{i + 1}</span>
                   {l.label}
                 </div>

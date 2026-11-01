@@ -70,7 +70,7 @@ export default function EventsPage() {
                       </span>
                       <span className="font-medium">{Math.round(pct)}%</span>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-black/[0.06]">
+                    <div className="h-1.5 overflow-hidden rounded-full bg-[var(--a-line)]">
                       <div className="h-full rounded-full bg-[var(--accent)] transition-all" style={{ width: `${pct}%` }} />
                     </div>
                   </div>

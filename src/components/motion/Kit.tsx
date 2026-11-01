@@ -219,7 +219,7 @@ export function ClipImg({
       ref={ref}
       initial={{ clipPath: "inset(0 0 100% 0)" }}
       whileInView={{ clipPath: "inset(0 0 0% 0)" }}
-      viewport={{ once: true, margin: "-10%" }}
+      viewport={{ once: true, margin: "-4%" }}
       transition={{ duration: 1.3, ease: EASE }}
       className={cn("relative overflow-hidden", className)}
     >

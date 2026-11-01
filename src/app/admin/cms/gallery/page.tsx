@@ -36,7 +36,7 @@ export default function GalleryCMS() {
       ) : (
         <Reorder.Group axis="y" values={items} onReorder={(v) => reorder("gallery", v.map((x) => x.id))} className="grid gap-3 sm:grid-cols-2">
           {items.map((g) => (
-            <Reorder.Item key={g.id} value={g} className="flex cursor-grab items-center gap-3 rounded-2xl border border-[var(--a-line)] bg-white p-2 active:cursor-grabbing">
+            <Reorder.Item key={g.id} value={g} className="flex cursor-grab items-center gap-3 rounded-[10px] border border-[var(--a-line)] bg-white p-2 active:cursor-grabbing">
               <Thumb src={g.image} className="aspect-[4/3] w-28" />
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">{g.caption || "No caption"}</div>

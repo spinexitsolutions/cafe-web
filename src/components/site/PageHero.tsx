@@ -18,7 +18,7 @@ export function PageHero({ eyebrow, title, italic, intro, children }: { eyebrow:
           >
             <span className="text-accent">(●)</span> <span className="text-muted">{eyebrow}</span>
           </motion.p>
-          <h1 className="display col-span-12 text-[clamp(2.6rem,10vw,7.5rem)] uppercase md:col-span-9">
+          <h1 className="display col-span-12 text-[clamp(2.4rem,8vw,6.2rem)] uppercase [overflow-wrap:anywhere] md:col-span-9">
             <Lines text={title} onMount delay={0.1} />
             {italic && (
               <>

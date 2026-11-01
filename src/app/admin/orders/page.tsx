@@ -88,7 +88,7 @@ export default function OrdersPage() {
           <>
             <Table head={["Order", "Date", "Customer", "Items", "Type", "Payment", "Status", "Total"]}>
               {list.map((o) => (
-                <tr key={o.id} onClick={() => router.push(`/admin/orders/${o.id}`)} className="cursor-pointer transition hover:bg-black/[0.02]">
+                <tr key={o.id} onClick={() => router.push(`/admin/orders/${o.id}`)} className="cursor-pointer transition hover:bg-[var(--accent)]/[0.02]">
                   <Td className="font-medium">{o.number}</Td>
                   <Td className="text-[var(--a-muted)]">
                     {fmtDate(o.createdAt, { day: "numeric", month: "short" })} · {fmtTime(o.createdAt)}
@@ -111,7 +111,7 @@ export default function OrdersPage() {
             </Table>
             <div className="divide-y divide-[var(--a-line)] md:hidden">
               {list.map((o) => (
-                <Link key={o.id} href={`/admin/orders/${o.id}`} className="block px-4 py-3.5 active:bg-black/[0.03]">
+                <Link key={o.id} href={`/admin/orders/${o.id}`} className="block px-4 py-3.5 active:bg-[var(--a-line)]">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{o.number}</span>
                     <span className="font-medium tabular-nums">{money(o.total, currency)}</span>

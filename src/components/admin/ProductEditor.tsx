@@ -164,7 +164,7 @@ export function ProductEditor({ initial, isNew }: { initial: Product; isNew?: bo
             <div className="grid gap-4 sm:grid-cols-2">
               <ImageInput label="Main image" value={p.image} onChange={(v) => set("image", v)} />
               <div>
-                <div className="mb-1.5 text-[13px] font-medium text-[#3a3a3c]">Gallery images</div>
+                <div className="mb-1.5 text-[13px] font-medium text-[var(--a-muted)]">Gallery images</div>
                 <StringList value={p.gallery} onChange={(v) => set("gallery", v)} placeholder="https://…" addLabel="Add image" />
               </div>
             </div>
@@ -181,7 +181,7 @@ export function ProductEditor({ initial, isNew }: { initial: Product; isNew?: bo
             {p.variants.length === 0 && <p className="text-sm text-[var(--a-muted)]">No variants. Add groups like Size, Milk or Grind — each option can change the price.</p>}
             <div className="space-y-4">
               {p.variants.map((g, gi) => (
-                <div key={g.id} className="rounded-xl border border-[var(--a-line)] p-3">
+                <div key={g.id} className="rounded-[8px] border border-[var(--a-line)] p-3">
                   <div className="mb-3 flex items-center gap-2">
                     <Input value={g.name} onChange={(e) => setGroup(gi, { ...g, name: e.target.value })} className="font-medium" />
                     <IconButton onClick={() => set("variants", p.variants.filter((_, j) => j !== gi))} aria-label="Remove group">
