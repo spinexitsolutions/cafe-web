@@ -1,50 +1,73 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Bike, Check, CreditCard, Loader2, Lock, ShoppingBag, Smartphone, Store, Tag, UtensilsCrossed, X } from "lucide-react";
+import { ArrowUpRight, Banknote, Bike, Check, CreditCard, Loader2, Lock, Minus, Plus, Smartphone, Store, UtensilsCrossed, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Lines, RollText, Rule } from "@/components/motion/Kit";
 import type { Fulfillment, PaymentMethod } from "@/lib/types";
 import { cn, money } from "@/lib/utils";
 import { computeTotals, useCart } from "@/store/cart";
 import { useDB } from "@/store/db";
 
-function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+/** One numbered block on the editorial grid: label column + content column. */
+function Step({ n, title, done, children }: { n: number; title: string; done?: boolean; children: React.ReactNode }) {
   return (
-    <section className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-7">
-      <h2 className="flex items-center gap-3 text-lg font-medium">
-        <span className="grid size-7 place-items-center rounded-full bg-ink text-xs text-bg">{n}</span>
-        {title}
-      </h2>
-      <div className="mt-5">{children}</div>
-    </section>
+    <motion.section
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.1 * n, ease: [0.22, 1, 0.36, 1] }}
+      className="pb-10"
+    >
+      <Rule />
+      <div className="grid gap-5 pt-5 md:grid-cols-12">
+        <div className="flex items-center gap-3 md:col-span-4 md:block">
+          <p className="text-[13px] font-semibold">
+            <span className="tabular-nums text-accent">({String(n).padStart(2, "0")})</span>{" "}
+            <span className="text-muted">Step</span>
+          </p>
+          <h2 className="display display-n flex items-center gap-2 text-2xl uppercase md:mt-2 md:text-3xl">
+            {title}
+            <AnimatePresence>
+              {done && (
+                <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="grid size-6 place-items-center rounded-full bg-accent text-white">
+                  <Check className="size-3.5" strokeWidth={3} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </h2>
+        </div>
+        <div className="md:col-span-8">{children}</div>
+      </div>
+    </motion.section>
   );
 }
 
-function Seg<T extends string>({ value, onChange, options, id }: { value: T; onChange: (v: T) => void; options: { id: T; label: string; icon: React.ElementType; hint?: string }[]; id: string }) {
+/** Hairline-grid option tiles; the active one fills with ink. */
+function Tiles<T extends string>({ value, onChange, options }: { value: T; onChange: (v: T) => void; options: { id: T; label: string; icon: React.ElementType; hint?: string }[] }) {
   return (
-    <div className={cn("grid gap-2", options.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
-      {options.map(({ id: oid, label, icon: Icon, hint }) => (
-        <button
-          type="button"
-          key={oid}
-          onClick={() => onChange(oid)}
-          className={cn("relative flex flex-col items-start gap-2 rounded-2xl p-3.5 text-left ring-1 transition sm:p-4", value === oid ? "ring-ink" : "ring-line hover:ring-ink/30")}
-        >
-          {value === oid && <motion.span layoutId={`seg-${id}`} className="absolute inset-0 rounded-2xl bg-soft ring-2 ring-ink" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
-          <Icon className="relative size-5" />
-          <span className="relative text-sm font-medium">{label}</span>
-          {hint && <span className="relative text-[11px] leading-tight text-muted">{hint}</span>}
-        </button>
-      ))}
+    <div className={cn("grid gap-px overflow-hidden rounded-[var(--radius)] border border-ink/12 bg-ink/12", options.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
+      {options.map(({ id, label, icon: Icon, hint }) => {
+        const active = value === id;
+        return (
+          <button type="button" key={id} onClick={() => onChange(id)} className={cn("relative flex flex-col items-start gap-6 p-3.5 text-left transition-colors duration-300 sm:p-4", active ? "text-bg" : "bg-bg hover:bg-surface")}>
+            {active && <motion.span layoutId={`tile-${options.map((o) => o.id).join("")}`} className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 450, damping: 38 }} />}
+            <Icon className="relative size-5" />
+            <span className="relative">
+              <span className="block text-sm font-semibold">{label}</span>
+              {hint && <span className={cn("block text-[11px]", active ? "text-bg/60" : "text-muted")}>{hint}</span>}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, couponCode, setCoupon, clear, rememberOrder } = useCart();
+  const { items, couponCode, setCoupon, clear, rememberOrder, setQty } = useCart();
   const settings = useDB((s) => s.settings);
   const coupons = useDB((s) => s.coupons);
   const placeOrder = useDB((s) => s.placeOrder);
@@ -69,15 +92,21 @@ export default function CheckoutPage() {
 
   if (items.length === 0 && !placing) {
     return (
-      <div className="mx-auto flex max-w-md flex-col items-center px-5 py-44 text-center">
-        <div className="grid size-20 place-items-center rounded-full bg-accent-soft">
-          <ShoppingBag className="size-8 text-accent" />
-        </div>
-        <h1 className="display mt-6 text-5xl">Your bag is empty</h1>
-        <p className="mt-2 text-muted">Add something delicious to get started.</p>
-        <div className="mt-6 flex gap-3">
-          <Link href="/menu" className="rounded-full bg-ink px-6 py-3 text-sm font-medium text-bg">Menu</Link>
-          <Link href="/shop" className="rounded-full px-6 py-3 text-sm font-medium ring-1 ring-line">Shop</Link>
+      <div className="px-5 pb-24 pt-20 sm:px-8 lg:px-12 lg:pt-24">
+        <Rule />
+        <div className="grid gap-6 pt-5 md:grid-cols-12">
+          <p className="text-[13px] font-semibold md:col-span-3">
+            <span className="text-accent">(0)</span> <span className="text-muted">Items in bag</span>
+          </p>
+          <div className="md:col-span-9">
+            <h1 className="display text-[clamp(2.6rem,9vw,7rem)] uppercase">
+              <Lines text="Your bag" onMount /> <em><Lines text="is empty." onMount delay={0.1} /></em>
+            </h1>
+            <div className="mt-8 flex gap-3">
+              <Link href="/menu" className="group flex h-12 items-center rounded-full bg-ink px-6 text-sm font-semibold text-bg"><RollText>Browse the menu</RollText></Link>
+              <Link href="/shop" className="group flex h-12 items-center rounded-full px-6 text-sm font-semibold ring-1 ring-ink/20"><RollText>Shop beans</RollText></Link>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -89,6 +118,9 @@ export default function CheckoutPage() {
     if (d.getMinutes() === 0) d.setHours(d.getHours() + 1);
     return d.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
   }).filter((v, i, a) => a.indexOf(v) === i);
+
+  const detailsDone = !!form.name.trim() && /^[+\d\s-]{8,}$/.test(form.phone) && /^\S+@\S+\.\S+$/.test(form.email) && (fulfillment !== "delivery" || form.address.trim().length >= 8) && (fulfillment !== "dine-in" || !!form.table.trim());
+  const payDone = payment === "cod" || (payment === "upi" && /^[\w.-]+@[\w]+$/.test(form.upi)) || (payment === "card" && form.card.replace(/\s/g, "").length >= 12 && /^\d{2}\/\d{2}$/.test(form.exp) && form.cvc.length >= 3);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -138,46 +170,76 @@ export default function CheckoutPage() {
     setTimeout(clear, 300);
   };
 
+  /** Underlined editorial field. Called as a function (not a component) so inputs keep focus. */
   const F = ({ k, label, type = "text", ph, area, className }: { k: keyof typeof form; label: string; type?: string; ph?: string; area?: boolean; className?: string }) => (
-    <label className={cn("block", className)} data-error={!!errors[k]}>
-      <span className="mb-1.5 flex justify-between text-xs font-medium text-muted">
+    <label className={cn("group block", className)} data-error={!!errors[k]}>
+      <span className="flex justify-between text-[12px] font-semibold text-muted">
         {label}
         {errors[k] && <span className="text-red-600">{errors[k]}</span>}
       </span>
       {area ? (
-        <textarea value={form[k]} onChange={set(k)} placeholder={ph} className={cn("field min-h-20", errors[k] && "!border-red-400")} />
+        <textarea
+          value={form[k]}
+          onChange={set(k)}
+          placeholder={ph}
+          rows={2}
+          className={cn("w-full resize-none border-b-2 bg-transparent py-2.5 text-lg outline-none transition-colors placeholder:text-ink/25 focus:border-accent", errors[k] ? "border-red-400" : "border-ink/15")}
+        />
       ) : (
-        <input type={type} value={form[k]} onChange={set(k)} placeholder={ph} className={cn("field", errors[k] && "!border-red-400")} />
+        <input
+          type={type}
+          value={form[k]}
+          onChange={set(k)}
+          placeholder={ph}
+          className={cn("w-full border-b-2 bg-transparent py-2.5 text-lg outline-none transition-colors placeholder:text-ink/25 focus:border-accent", errors[k] ? "border-red-400" : "border-ink/15")}
+        />
       )}
     </label>
   );
 
-  return (
-    <div className="mx-auto max-w-7xl px-4 pb-24 pt-20 sm:px-8 lg:pt-24">
-      <h1 className="display text-[clamp(3rem,9vw,6.5rem)]">
-        Check<em className="text-accent">out</em>
-      </h1>
-      {!site.acceptingOrders && (
-        <div className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-800 ring-1 ring-red-200">We’re not taking online orders right now. Please check back soon — or call us on {site.phone}.</div>
-      )}
+  const rows: [string, string, boolean?][] = [
+    ["Subtotal", money(t.subtotal, cur)],
+    ...(t.discount ? ([["Discount", `− ${money(t.discount, cur)}`, true]] as [string, string, boolean][]) : []),
+    [`GST ${site.taxRate}%`, money(t.tax, cur)],
+    ...(fulfillment === "delivery" ? ([["Delivery", t.deliveryFee ? money(t.deliveryFee, cur) : "Free"]] as [string, string][]) : []),
+    ...(t.tip ? ([["Tip for the team", money(t.tip, cur)]] as [string, string][]) : []),
+  ];
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_420px] lg:items-start">
-        <div className="space-y-4">
-          <Step n={1} title="How would you like it?">
-            <Seg
-              id="ful"
+  return (
+    <div className="px-5 pb-24 pt-20 sm:px-8 lg:px-12 lg:pt-24">
+      {/* Header */}
+      <Rule />
+      <div className="grid gap-4 pt-5 md:grid-cols-12">
+        <p className="text-[13px] font-semibold md:col-span-3">
+          <span className="text-accent">({t.count})</span> <span className="text-muted">Items · {money(t.subtotal, cur)}</span>
+        </p>
+        <h1 className="display text-[clamp(2.8rem,10vw,8rem)] uppercase md:col-span-9">
+          <Lines text="Check" onMount />
+          <em>
+            <Lines text="out." onMount delay={0.1} />
+          </em>
+        </h1>
+      </div>
+      {!site.acceptingOrders && <div className="mt-6 border-l-4 border-red-500 bg-red-50 p-4 text-sm text-red-800">We’re not taking online orders right now. Please call us on {site.phone}.</div>}
+
+      <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_400px] lg:gap-14">
+        {/* Steps */}
+        <div>
+          <Step n={1} title="Fulfilment" done>
+            <Tiles
               value={fulfillment}
               onChange={setFulfillment}
               options={[
                 { id: "delivery", label: "Delivery", icon: Bike, hint: "30–40 min" },
-                { id: "pickup", label: "Pickup", icon: Store, hint: "Ready in ~10 min" },
+                { id: "pickup", label: "Pickup", icon: Store, hint: "~10 min" },
                 { id: "dine-in", label: "Dine-in", icon: UtensilsCrossed, hint: "To your table" },
               ]}
             />
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex gap-5 text-sm font-semibold">
               {(["asap", "later"] as const).map((w) => (
-                <button key={w} type="button" onClick={() => setWhen(w)} className={cn("rounded-full px-4 py-2 text-sm ring-1 transition", when === w ? "bg-ink text-bg ring-ink" : "ring-line")}>
-                  {w === "asap" ? "As soon as possible" : "Schedule"}
+                <button key={w} type="button" onClick={() => setWhen(w)} className={cn("relative pb-1.5 transition-colors", when === w ? "text-ink" : "text-muted")}>
+                  {w === "asap" ? "As soon as possible" : "Schedule for later"}
+                  {when === w && <motion.span layoutId="when-line" className="absolute inset-x-0 bottom-0 h-[2px] bg-accent" />}
                 </button>
               ))}
             </div>
@@ -186,7 +248,7 @@ export default function CheckoutPage() {
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden" data-error={!!errors.time}>
                   <div className="flex gap-2 overflow-x-auto pt-4 no-scrollbar">
                     {slots.map((s) => (
-                      <button key={s} type="button" onClick={() => setTime(s)} className={cn("shrink-0 rounded-xl px-3.5 py-2 text-sm ring-1 transition", time === s ? "bg-accent text-white ring-accent" : "ring-line")}>
+                      <button key={s} type="button" onClick={() => setTime(s)} className={cn("shrink-0 rounded-full px-4 py-2 text-sm font-semibold ring-1 transition", time === s ? "bg-ink text-bg ring-ink" : "ring-ink/15 hover:ring-ink/40")}>
                         {s}
                       </button>
                     ))}
@@ -197,29 +259,28 @@ export default function CheckoutPage() {
             </AnimatePresence>
           </Step>
 
-          <Step n={2} title="Your details">
-            <div className="grid gap-3 sm:grid-cols-2">
+          <Step n={2} title="Details" done={detailsDone}>
+            <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2">
               {F({ k: "name", label: "Full name", ph: "Ananya Rao" })}
               {F({ k: "phone", label: "Phone", type: "tel", ph: "+91 98765 43210" })}
               {F({ k: "email", label: "Email", type: "email", ph: "you@email.com", className: "sm:col-span-2" })}
               {fulfillment === "delivery" && F({ k: "address", label: "Delivery address", ph: "Flat, building, street, area", area: true, className: "sm:col-span-2" })}
               {fulfillment === "dine-in" && F({ k: "table", label: "Table number", ph: "e.g. 7" })}
-              {F({ k: "notes", label: "Notes for the kitchen (optional)", ph: "Extra hot, no sugar…", className: "sm:col-span-2" })}
+              {F({ k: "notes", label: "Kitchen notes (optional)", ph: "Extra hot, no sugar…", className: "sm:col-span-2" })}
             </div>
           </Step>
 
-          <Step n={3} title="Payment">
-            <Seg
-              id="pay"
+          <Step n={3} title="Payment" done={payDone}>
+            <Tiles
               value={payment}
               onChange={setPayment}
               options={[
-                { id: "upi", label: "UPI", icon: Smartphone },
-                { id: "card", label: "Card", icon: CreditCard },
-                { id: "cod", label: fulfillment === "delivery" ? "Cash on delivery" : "Pay at counter", icon: Banknote },
+                { id: "upi", label: "UPI", icon: Smartphone, hint: "GPay, PhonePe…" },
+                { id: "card", label: "Card", icon: CreditCard, hint: "Visa, Mastercard" },
+                { id: "cod", label: fulfillment === "delivery" ? "Cash" : "At counter", icon: Banknote, hint: "Pay on arrival" },
               ]}
             />
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="mt-6 grid gap-x-6 gap-y-6 sm:grid-cols-3">
               {payment === "upi" && F({ k: "upi", label: "UPI ID", ph: "name@okbank", className: "sm:col-span-3" })}
               {payment === "card" && (
                 <>
@@ -229,110 +290,141 @@ export default function CheckoutPage() {
                 </>
               )}
             </div>
-            <p className="mt-4 flex items-center gap-2 text-xs text-muted">
+            <p className="mt-5 flex items-center gap-2 text-xs text-muted">
               <Lock className="size-3.5" /> Demo checkout — no real payment is taken.
             </p>
           </Step>
 
-          <Step n={4} title="Add a tip for the team">
-            <div className="grid grid-cols-4 gap-2">
+          <Step n={4} title="Say thanks" done={tip > 0}>
+            <div className="grid grid-cols-4 gap-px overflow-hidden rounded-[var(--radius)] border border-ink/12 bg-ink/12">
               {[0, 20, 40, 60].map((v) => (
-                <button key={v} type="button" onClick={() => setTip(v)} className={cn("rounded-2xl py-3 text-sm font-medium ring-1 transition", tip === v ? "bg-ink text-bg ring-ink" : "ring-line hover:ring-ink/30")}>
-                  {v ? money(v, cur) : "No tip"}
+                <button key={v} type="button" onClick={() => setTip(v)} className={cn("relative py-4 text-sm font-semibold transition-colors", tip === v ? "text-bg" : "bg-bg hover:bg-surface")}>
+                  {tip === v && <motion.span layoutId="tip" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 450, damping: 38 }} />}
+                  <span className="relative">{v ? money(v, cur) : "No tip"}</span>
                 </button>
               ))}
             </div>
+            <p className="mt-3 text-xs text-muted">100% of tips go to the baristas and bakers on shift.</p>
           </Step>
         </div>
 
-        <aside className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-7 lg:sticky lg:top-20">
-          <h2 className="text-lg font-medium">Order summary</h2>
-          <ul className="mt-4 max-h-72 space-y-4 overflow-y-auto pr-1" data-lenis-prevent>
-            {items.map((i) => (
-              <li key={i.key} className="flex gap-3">
-                <div className="relative shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={i.image} alt="" className="size-14 rounded-xl object-cover" />
-                  <span className="absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full bg-ink text-[10px] font-semibold text-bg">{i.qty}</span>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{i.name}</p>
-                  {i.options.length > 0 && <p className="truncate text-xs text-muted">{i.options.join(" · ")}</p>}
-                </div>
-                <span className="text-sm tabular-nums">{money(i.unitPrice * i.qty, cur)}</span>
-              </li>
-            ))}
-          </ul>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setCoupon(code.trim().toUpperCase() || null);
-            }}
-            className="mt-5 flex gap-2"
+        {/* Receipt */}
+        <aside className="lg:sticky lg:top-20 lg:self-start">
+          <motion.div
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0% 0)" }}
+            transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
+            className="relative bg-ink text-bg"
           >
-            <label className="flex flex-1 items-center gap-2 rounded-full bg-bg px-4 ring-1 ring-line focus-within:ring-accent">
-              <Tag className="size-4 text-muted" />
-              <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="Promo code" className="h-11 min-w-0 flex-1 bg-transparent text-sm uppercase outline-none" />
-            </label>
-            {t.coupon ? (
-              <button type="button" onClick={() => { setCoupon(null); setCode(""); }} className="grid size-11 place-items-center rounded-full ring-1 ring-line" aria-label="Remove code">
-                <X className="size-4" />
-              </button>
-            ) : (
-              <button className="rounded-full bg-ink px-5 text-sm font-medium text-bg">Apply</button>
-            )}
-          </form>
-          {couponCode && t.couponError && <p className="mt-2 text-xs text-red-600">{t.couponError}</p>}
-          {t.coupon && (
-            <p className="mt-2 flex items-center gap-1.5 text-xs text-emerald-700">
-              <Check className="size-3.5" /> {t.coupon.code} applied — {t.coupon.description}
-            </p>
-          )}
-          {!couponCode && <p className="mt-2 text-xs text-muted">Try AURA10 for 10% off.</p>}
-
-          <dl className="mt-5 space-y-2 border-t border-line pt-5 text-sm">
-            {[
-              ["Subtotal", money(t.subtotal, cur)],
-              ...(t.discount ? [["Discount", `− ${money(t.discount, cur)}`]] : []),
-              [`GST (${site.taxRate}%)`, money(t.tax, cur)],
-              ...(fulfillment === "delivery" ? [["Delivery", t.deliveryFee ? money(t.deliveryFee, cur) : "Free"]] : []),
-              ...(t.tip ? [["Tip", money(t.tip, cur)]] : []),
-            ].map(([k, v]) => (
-              <div key={k} className="flex justify-between">
-                <dt className="text-muted">{k}</dt>
-                <dd className={cn("tabular-nums", k === "Discount" && "text-emerald-700")}>{v}</dd>
+            <div className="p-6 sm:p-7">
+              <div className="flex items-baseline justify-between">
+                <p className="display text-2xl uppercase">{site.shortName}®</p>
+                <p className="text-[11px] font-semibold text-bg/50">Order summary</p>
               </div>
-            ))}
-            <div className="flex justify-between border-t border-line pt-3 text-base font-medium">
-              <dt>Total</dt>
-              <dd className="display text-3xl tabular-nums">{money(t.total, cur)}</dd>
-            </div>
-          </dl>
-          {settings.loyalty.enabled && (
-            <p className="mt-3 rounded-xl bg-accent-soft px-3 py-2 text-xs">
-              You’ll earn <b>{Math.floor((t.total / 100) * settings.loyalty.pointsPer100)} Aura points</b> with this order ✦
-            </p>
-          )}
-          {t.subtotal < site.minOrder && <p className="mt-3 text-xs text-red-600">Minimum order is {money(site.minOrder, cur)}.</p>}
+              <div className="my-5 border-t border-dashed border-bg/25" />
+              <ul className="max-h-72 space-y-4 overflow-y-auto pr-1" data-lenis-prevent>
+                {items.map((i) => (
+                  <li key={i.key} className="flex gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={i.image} alt="" className="size-12 shrink-0 rounded-[6px] object-cover" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline gap-2 text-sm">
+                        <span className="truncate font-semibold">{i.name}</span>
+                        <span className="h-0 flex-1 translate-y-[-0.2em] border-b border-dotted border-bg/30" />
+                        <span className="tabular-nums">{money(i.unitPrice * i.qty, cur)}</span>
+                      </div>
+                      {i.options.length > 0 && <p className="truncate text-[11px] text-bg/50">{i.options.join(" · ")}</p>}
+                      <div className="mt-1.5 flex items-center gap-2 text-xs">
+                        <button onClick={() => setQty(i.key, i.qty - 1)} className="grid size-6 place-items-center rounded-full ring-1 ring-bg/25 hover:bg-bg/10" aria-label="Decrease">
+                          <Minus className="size-3" />
+                        </button>
+                        <span className="w-4 text-center tabular-nums">{i.qty}</span>
+                        <button onClick={() => setQty(i.key, i.qty + 1)} className="grid size-6 place-items-center rounded-full ring-1 ring-bg/25 hover:bg-bg/10" aria-label="Increase">
+                          <Plus className="size-3" />
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
 
-          <button
-            onClick={submit}
-            disabled={placing || !site.acceptingOrders || t.subtotal < site.minOrder}
-            className="relative mt-5 flex h-14 w-full items-center justify-center overflow-hidden rounded-full bg-accent font-medium text-white transition active:scale-[0.98] disabled:opacity-50"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {placing ? (
-                <motion.span key="l" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" /> Processing payment…
-                </motion.span>
-              ) : (
-                <motion.span key="p" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-                  Place order · {money(t.total, cur)}
-                </motion.span>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setCoupon(code.trim().toUpperCase() || null);
+                }}
+                className="mt-6 flex items-end gap-3"
+              >
+                <input
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.toUpperCase())}
+                  placeholder="Promo code"
+                  className="min-w-0 flex-1 border-b-2 border-bg/20 bg-transparent py-2 text-sm font-semibold uppercase tracking-wider outline-none placeholder:text-bg/30 focus:border-accent"
+                />
+                {t.coupon ? (
+                  <button type="button" onClick={() => { setCoupon(null); setCode(""); }} className="grid size-9 place-items-center rounded-full ring-1 ring-bg/25" aria-label="Remove code">
+                    <X className="size-4" />
+                  </button>
+                ) : (
+                  <button className="h-9 rounded-full bg-bg px-4 text-xs font-bold text-ink">Apply</button>
+                )}
+              </form>
+              {couponCode && t.couponError && <p className="mt-2 text-xs text-red-300">{t.couponError}</p>}
+              {t.coupon && <p className="mt-2 text-xs text-emerald-300">✓ {t.coupon.code} — {t.coupon.description}</p>}
+              {!couponCode && <p className="mt-2 text-[11px] text-bg/40">Try AURA10 for 10% off.</p>}
+
+              <div className="my-5 border-t border-dashed border-bg/25" />
+              <dl className="space-y-2 text-sm">
+                {rows.map(([k, v, good]) => (
+                  <div key={k} className="flex items-baseline gap-2">
+                    <dt className="text-bg/60">{k}</dt>
+                    <span className="h-0 flex-1 translate-y-[-0.2em] border-b border-dotted border-bg/20" />
+                    <dd className={cn("tabular-nums", good && "text-emerald-300")}>{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="mt-5 flex items-end justify-between border-t border-bg/20 pt-4">
+                <span className="text-sm font-semibold">Total</span>
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.span key={t.total} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="display text-4xl tabular-nums">
+                    {money(t.total, cur)}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+              {settings.loyalty.enabled && (
+                <p className="mt-3 text-xs text-bg/60">
+                  + <b className="text-bg">{Math.floor((t.total / 100) * settings.loyalty.pointsPer100)} Aura points</b> with this order
+                </p>
               )}
-            </AnimatePresence>
-          </button>
+              {t.subtotal < site.minOrder && <p className="mt-3 text-xs text-red-300">Minimum order is {money(site.minOrder, cur)}.</p>}
+
+              <button
+                onClick={submit}
+                disabled={placing || !site.acceptingOrders || t.subtotal < site.minOrder}
+                className="group relative mt-6 flex h-14 w-full items-center justify-between overflow-hidden rounded-full bg-accent pl-6 pr-2 font-semibold text-white transition active:scale-[0.98] disabled:opacity-50"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {placing ? (
+                    <motion.span key="l" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="flex items-center gap-2">
+                      <Loader2 className="size-4 animate-spin" /> Processing…
+                    </motion.span>
+                  ) : (
+                    <motion.span key="p" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+                      <RollText>{`Place order · ${money(t.total, cur)}`}</RollText>
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                <span className="grid size-10 place-items-center rounded-full bg-white/20 transition-transform duration-500 group-hover:rotate-45">
+                  <ArrowUpRight className="size-4" />
+                </span>
+              </button>
+            </div>
+            {/* perforated receipt edge */}
+            <div aria-hidden className="absolute inset-x-0 -bottom-[7px] h-[14px]" style={{ background: "radial-gradient(circle at 7px 7px, var(--bg) 6px, transparent 6.5px) repeat-x", backgroundSize: "14px 14px" }} />
+          </motion.div>
+          <p className="mt-6 flex items-center gap-2 text-xs text-muted">
+            <Lock className="size-3.5" /> Secure checkout · Free cancellation within 2 minutes
+          </p>
         </aside>
       </div>
     </div>

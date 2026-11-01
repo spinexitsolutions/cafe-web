@@ -17,9 +17,9 @@
 }
 
 :root {
-  --bg: #f3f1ec;
-  --ink: #141210;
-  --accent: #e8432d;
+  --bg: #f2f0ea;
+  --ink: #10121c;
+  --accent: #2b45ff;
   --surface: #ffffff;
   --radius: 10px;
   --font-display-active: var(--font-archivo);

@@ -1,6 +1,6 @@
 # Aura Coffee Atelier — café website + admin (CRM · CMS · shop)
 
-A demo café website built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, **Framer Motion**, **Lenis** smooth scrolling and **Zustand**. It's mobile-first, and the design follows Apple's clean style. Typography is all sans-serif: Archivo (expanded) for headlines and Instrument Sans for body text, on an editorial grid with a "coffee cherry" red accent.
+A demo café website built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, **Framer Motion**, **Lenis** smooth scrolling and **Zustand**. It's mobile-first, and the design follows Apple's clean style. Typography is all sans-serif: Archivo (expanded) for headlines and Instrument Sans for body text, on an editorial grid with a cobalt-blue accent.
 
 ```bash
 npm install

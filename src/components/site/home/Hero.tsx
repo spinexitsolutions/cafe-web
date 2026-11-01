@@ -57,9 +57,9 @@ export function Hero() {
   const inView = useInView(ref, { amount: 0.3 });
   const idx = slides.length ? i % slides.length : 0;
   const cur = slides[idx];
-  const bg = cur?.bg ?? "#f3f1ec";
-  const ink = cur?.ink ?? "#141210";
-  const pop = cur?.pop ?? "#e8432d";
+  const bg = cur?.bg ?? "#f2f0ea";
+  const ink = cur?.ink ?? "#10121c";
+  const pop = cur?.pop ?? "#2b45ff";
   const duration = Math.max(0, hero.autoplay ?? 5);
 
   useEffect(() => {

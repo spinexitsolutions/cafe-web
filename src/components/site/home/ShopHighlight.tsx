@@ -44,7 +44,7 @@ export function ShopHighlight() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-px border-y border-ink/10 bg-ink/10 lg:grid-cols-4">
           {list.map((p, i) => (
             <ProductCard key={p.id} p={p} index={i} />
           ))}

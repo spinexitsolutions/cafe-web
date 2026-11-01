@@ -278,9 +278,9 @@ export const seedSettings: Settings = {
   },
   announcement: { enabled: true, text: "New — Honey Cinnamon Latte is back for winter. Use AURA10 for 10% off your first order.", href: "/menu" },
   theme: {
-    accent: "#e8432d",
-    background: "#f3f1ec",
-    ink: "#141210",
+    accent: "#2b45ff",
+    background: "#f2f0ea",
+    ink: "#10121c",
     surface: "#ffffff",
     displayFont: "archivo",
     radius: 10,
@@ -317,10 +317,10 @@ export const seedSettings: Settings = {
     ctaSecondary: { label: "Book a table", href: "/reserve" },
     autoplay: 5,
     slides: [
-      { id: "hs1", productId: "p-aura-flat-white", bg: "#ead9c6", ink: "#2a190e", pop: "#c4471f" },
-      { id: "hs2", productId: "p-ceremonial-matcha", bg: "#d4e4bb", ink: "#17240c", pop: "#2f6b16" },
-      { id: "hs3", productId: "p-iced-spanish-latte", bg: "#f6cdb0", ink: "#3a170a", pop: "#e2361f" },
-      { id: "hs4", productId: "p-nitro-cold-brew", bg: "#1d1411", ink: "#f6ebe0", pop: "#ff6a3d" },
+      { id: "hs1", productId: "p-aura-flat-white", bg: "#e6ddcf", ink: "#17150f", pop: "#2b45ff" },
+      { id: "hs2", productId: "p-ceremonial-matcha", bg: "#d5e3c4", ink: "#13200c", pop: "#2a6b1a" },
+      { id: "hs3", productId: "p-iced-spanish-latte", bg: "#cfd9f5", ink: "#0d1736", pop: "#2b45ff" },
+      { id: "hs4", productId: "p-nitro-cold-brew", bg: "#12141d", ink: "#eef0f8", pop: "#93a4ff" },
     ],
   },
   story: {

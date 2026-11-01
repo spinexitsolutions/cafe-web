@@ -146,7 +146,7 @@ export default function HomeCMS() {
                   onClick={() =>
                     set("hero", {
                       ...hero,
-                      slides: [...(hero.slides ?? []), { id: `hs${Date.now()}`, productId: products.find((p) => p.type === "menu")?.id ?? "", bg: "#f4f2ee", ink: "#14110f", pop: "#e8432d" }],
+                      slides: [...(hero.slides ?? []), { id: `hs${Date.now()}`, productId: products.find((p) => p.type === "menu")?.id ?? "", bg: "#f2f0ea", ink: "#10121c", pop: "#2b45ff" }],
                     })
                   }
                 >

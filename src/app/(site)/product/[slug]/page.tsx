@@ -254,7 +254,7 @@ export default function ProductPage() {
             You might <em>also like</em>
           </h2>
           {p.type === "shop" ? (
-            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4">
+            <div className="mt-8 grid grid-cols-2 gap-px border-y border-ink/10 bg-ink/10 lg:grid-cols-4">
               {related.map((r, i) => (
                 <ProductCard key={r.id} p={r} index={i} />
               ))}

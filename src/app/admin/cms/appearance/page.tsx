@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
 type Theme = Settings["theme"];
 
 const PRESETS: { name: string; theme: Omit<Theme, "displayFont" | "radius"> }[] = [
-  { name: "Cherry", theme: { accent: "#e8432d", background: "#f3f1ec", ink: "#141210", surface: "#ffffff" } },
-  { name: "Matcha", theme: { accent: "#3f7d20", background: "#f1f3ea", ink: "#121a0c", surface: "#ffffff" } },
-  { name: "Midnight", theme: { accent: "#ff6a3d", background: "#121010", ink: "#f2eee8", surface: "#1c1917" } },
-  { name: "Cobalt", theme: { accent: "#2b4bff", background: "#f3f3f0", ink: "#0f1020", surface: "#ffffff" } },
+  { name: "Cobalt", theme: { accent: "#2b45ff", background: "#f2f0ea", ink: "#10121c", surface: "#ffffff" } },
+  { name: "Forest", theme: { accent: "#1f6b45", background: "#eff1ea", ink: "#0e1a12", surface: "#ffffff" } },
+  { name: "Plum", theme: { accent: "#7a2a5c", background: "#f4eff0", ink: "#1c1018", surface: "#ffffff" } },
+  { name: "Midnight", theme: { accent: "#93a4ff", background: "#0f1118", ink: "#eef0f8", surface: "#181b25" } },
   { name: "Mono", theme: { accent: "#1d1d1f", background: "#f5f5f7", ink: "#1d1d1f", surface: "#ffffff" } },
 ];
 
