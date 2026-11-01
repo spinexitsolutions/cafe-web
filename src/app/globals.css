@@ -9,20 +9,20 @@
   --color-soft: color-mix(in oklab, var(--ink) 6%, var(--bg));
   --color-line: color-mix(in oklab, var(--ink) 11%, transparent);
   --color-accent-soft: color-mix(in oklab, var(--accent) 14%, var(--bg));
-  --font-display: var(--font-display-active), ui-serif, Georgia, serif;
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-display-active), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --radius-card: var(--radius);
   --ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :root {
-  --bg: #f6f1ea;
-  --ink: #17120e;
-  --accent: #c2652a;
+  --bg: #f4f2ee;
+  --ink: #14110f;
+  --accent: #e8432d;
   --surface: #ffffff;
-  --radius: 28px;
-  --font-display-active: var(--font-instrument);
+  --radius: 24px;
+  --font-display-active: var(--font-bricolage);
   color-scheme: light;
 }
 
@@ -63,23 +63,49 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Display type */
+/* Display type — heavy, condensed grotesk */
 .display {
   font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.95;
+  font-weight: 700;
+  font-variation-settings: "wdth" 84, "opsz" 96;
+  letter-spacing: -0.032em;
+  line-height: 0.9;
+  text-wrap: balance;
 }
 .display em,
 .display i {
-  font-style: italic;
+  font-style: normal;
+  color: var(--accent);
+}
+.display .soft {
+  font-weight: 300;
+  letter-spacing: -0.03em;
+}
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
 }
 
+/* Small labels */
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.eyebrow.plain::before {
+  display: none;
 }
 
 /* Film grain overlay for warmth */

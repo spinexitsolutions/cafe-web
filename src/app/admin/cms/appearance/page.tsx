@@ -10,17 +10,17 @@ import { cn } from "@/lib/utils";
 type Theme = Settings["theme"];
 
 const PRESETS: { name: string; theme: Omit<Theme, "displayFont" | "radius"> }[] = [
-  { name: "Espresso Classic", theme: { accent: "#c2652a", background: "#f6f1ea", ink: "#17120e", surface: "#ffffff" } },
-  { name: "Matcha", theme: { accent: "#5c7f3a", background: "#f1f2ea", ink: "#16200f", surface: "#ffffff" } },
-  { name: "Midnight", theme: { accent: "#e2a15b", background: "#14110f", ink: "#f3ece3", surface: "#1f1b18" } },
-  { name: "Rose", theme: { accent: "#c0566b", background: "#f8efee", ink: "#2a1418", surface: "#ffffff" } },
+  { name: "Cherry", theme: { accent: "#e8432d", background: "#f4f2ee", ink: "#14110f", surface: "#ffffff" } },
+  { name: "Matcha", theme: { accent: "#3f7d20", background: "#f1f3ea", ink: "#121a0c", surface: "#ffffff" } },
+  { name: "Midnight", theme: { accent: "#ff6a3d", background: "#121010", ink: "#f2eee8", surface: "#1c1917" } },
+  { name: "Cobalt", theme: { accent: "#2b4bff", background: "#f3f3f0", ink: "#0f1020", surface: "#ffffff" } },
   { name: "Mono", theme: { accent: "#1d1d1f", background: "#f5f5f7", ink: "#1d1d1f", surface: "#ffffff" } },
 ];
 
 const FONTS: { id: DisplayFont; name: string; css: string; note: string }[] = [
-  { id: "instrument", name: "Instrument Serif", css: "var(--font-instrument)", note: "Editorial, elegant" },
-  { id: "fraunces", name: "Fraunces", css: "var(--font-fraunces)", note: "Warm, soft, characterful" },
-  { id: "playfair", name: "Playfair Display", css: "var(--font-playfair)", note: "Classic, high contrast" },
+  { id: "bricolage", name: "Bricolage Grotesque", css: "var(--font-bricolage)", note: "Bold, condensed, characterful" },
+  { id: "funnel", name: "Funnel Display", css: "var(--font-funnel-display)", note: "Clean, modern, friendly" },
+  { id: "unbounded", name: "Unbounded", css: "var(--font-unbounded)", note: "Wide, geometric, loud" },
 ];
 
 function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
@@ -57,7 +57,7 @@ export default function AppearancePage() {
                 return (
                   <button key={p.name} onClick={() => set(p.theme)} className={cn("group rounded-2xl border p-2 text-left transition", active ? "border-[var(--accent)] ring-2 ring-[color-mix(in_oklab,var(--accent)_25%,transparent)]" : "border-[var(--a-line)] hover:border-black/20")}>
                     <div className="relative flex h-16 overflow-hidden rounded-xl" style={{ background: p.theme.background }}>
-                      <span className="m-auto font-[family-name:var(--font-instrument)] text-2xl italic" style={{ color: p.theme.ink }}>
+                      <span className="m-auto font-[family-name:var(--font-display-active)] text-2xl" style={{ color: p.theme.ink }}>
                         Aa
                       </span>
                       <span className="absolute bottom-2 right-2 size-4 rounded-full" style={{ background: p.theme.accent }} />
@@ -106,7 +106,7 @@ export default function AppearancePage() {
           <Card title="Live preview">
             <div className="overflow-hidden rounded-2xl ring-1 ring-black/10" style={{ background: t.background, color: t.ink }}>
               <div className="flex items-center justify-between px-4 py-3">
-                <span style={{ fontFamily: font.css }} className="text-xl italic">
+                <span style={{ fontFamily: font.css }} className="text-xl">
                   aura
                 </span>
                 <span className="rounded-full px-3 py-1 text-[11px] font-medium" style={{ background: t.ink, color: t.background }}>

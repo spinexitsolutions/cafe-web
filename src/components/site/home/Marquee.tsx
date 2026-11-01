@@ -9,7 +9,7 @@ function Row({ words, reverse, speed }: { words: string[]; reverse?: boolean; sp
       <div className="animate-marquee flex shrink-0 items-center" style={{ animationDirection: reverse ? "reverse" : "normal", ["--marquee-speed" as string]: speed }}>
         {[...list, ...list].map((w, i) => (
           <span key={i} className="flex items-center">
-            <span className="display whitespace-nowrap px-6 text-5xl italic sm:text-7xl">{w}</span>
+            <span className="display whitespace-nowrap px-6 text-5xl uppercase sm:text-7xl">{w}</span>
             <svg viewBox="0 0 24 24" className="size-6 shrink-0 text-accent sm:size-8" aria-hidden>
               <path fill="currentColor" d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z" />
             </svg>

@@ -63,7 +63,7 @@ function MiniPreview({ intro, run }: { intro: Intro; run: number }) {
                 </div>
               </div>
             ) : intro.style === "minimal" ? (
-              <motion.span initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="text-5xl italic" style={{ fontFamily: "var(--font-display-active)" }}>
+              <motion.span initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="text-5xl" style={{ fontFamily: "var(--font-display-active)" }}>
                 aura
               </motion.span>
             ) : (
@@ -74,7 +74,7 @@ function MiniPreview({ intro, run }: { intro: Intro; run: number }) {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -30, opacity: 0 }}
                   transition={{ duration: 0.35 }}
-                  className="text-5xl italic"
+                  className="text-5xl"
                   style={{ fontFamily: "var(--font-display-active)" }}
                 >
                   {intro.words[i] ?? ""}

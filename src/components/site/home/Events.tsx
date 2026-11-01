@@ -56,7 +56,7 @@ export function Events() {
                     <p className="eyebrow text-bg/50">
                       {e.category} · {e.time}
                     </p>
-                    <h3 className="display mt-1 text-3xl transition duration-500 group-hover:translate-x-2 group-hover:italic group-hover:text-accent sm:text-5xl">{e.title}</h3>
+                    <h3 className="display mt-1 text-3xl transition duration-500 group-hover:translate-x-2 group-hover:text-accent sm:text-5xl">{e.title}</h3>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="hidden text-right sm:block">

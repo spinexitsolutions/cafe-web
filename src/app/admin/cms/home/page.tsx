@@ -2,7 +2,7 @@
 
 import { Reorder } from "framer-motion";
 import { ArrowDown, ArrowUp, ExternalLink, GripVertical, Plus, Trash2 } from "lucide-react";
-import { Button, Card, Field, IconButton, ImageInput, Input, PageHeader, PageSkeleton, SaveBar, StringList, Textarea, Toggle, useDraft } from "@/components/admin/ui";
+import { Button, Card, Field, IconButton, ImageInput, Input, PageHeader, PageSkeleton, SaveBar, Select, StringList, Textarea, Toggle, useDraft } from "@/components/admin/ui";
 import { toast } from "@/components/admin/toast";
 import { useDB } from "@/store/db";
 import type { Settings } from "@/lib/types";
@@ -12,6 +12,7 @@ type Draft = Pick<Settings, "hero" | "story" | "marquee" | "experience" | "annou
 export default function HomeCMS() {
   const hydrated = useDB((s) => s.hydrated);
   const settings = useDB((s) => s.settings);
+  const products = useDB((s) => s.products);
   const update = useDB((s) => s.updateSettings);
   const { draft, setDraft, dirty, reset } = useDraft<Draft>({
     hero: settings.hero,
@@ -75,7 +76,7 @@ export default function HomeCMS() {
               <Field label="Headline">
                 <Input value={hero.title} onChange={(e) => set("hero", { ...hero, title: e.target.value })} />
               </Field>
-              <Field label="Headline (italic part)">
+              <Field label="Headline (accent part)">
                 <Input value={hero.titleItalic} onChange={(e) => set("hero", { ...hero, titleItalic: e.target.value })} />
               </Field>
               <div className="rounded-2xl bg-black/[0.03] px-5 py-6 sm:col-span-2">
@@ -101,6 +102,62 @@ export default function HomeCMS() {
                   <Input value={hero.ctaSecondary.href} onChange={(e) => set("hero", { ...hero, ctaSecondary: { ...hero.ctaSecondary, href: e.target.value } })} placeholder="/reserve" />
                 </div>
               </Field>
+            </div>
+          </Card>
+
+          <Card title="Hero drinks — the hero recolours for each one">
+            <div className="space-y-3">
+              {(hero.slides ?? []).map((sl, k) => {
+                const slides = hero.slides ?? [];
+                const setSlide = (patch: Partial<typeof sl>) => set("hero", { ...hero, slides: slides.map((x, j) => (j === k ? { ...x, ...patch } : x)) });
+                return (
+                  <div key={sl.id} className="rounded-2xl border border-[var(--a-line)] p-3" style={{ background: sl.bg, color: sl.ink }}>
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 text-xs font-semibold opacity-60">{String(k + 1).padStart(2, "0")}</span>
+                      <Select
+                        value={sl.productId}
+                        onChange={(e) => setSlide({ productId: e.target.value })}
+                        options={products.filter((p) => p.type === "menu").map((p) => ({ value: p.id, label: p.name }))}
+                        className="flex-1 !text-[var(--a-ink)]"
+                      />
+                      <IconButton onClick={() => k > 0 && set("hero", { ...hero, slides: slides.map((x, j) => (j === k - 1 ? slides[k] : j === k ? slides[k - 1] : x)) })} aria-label="Move up">
+                        <ArrowUp className="size-4" />
+                      </IconButton>
+                      <IconButton onClick={() => set("hero", { ...hero, slides: slides.filter((_, j) => j !== k) })} aria-label="Remove">
+                        <Trash2 className="size-4" />
+                      </IconButton>
+                    </div>
+                    <div className="mt-3 grid grid-cols-3 gap-2 pl-8 text-xs font-medium">
+                      {(["bg", "ink", "pop"] as const).map((key) => (
+                        <label key={key} className="flex items-center gap-2 rounded-xl bg-white/70 p-1.5 pr-2 text-[var(--a-ink)]">
+                          <span className="relative size-7 shrink-0 overflow-hidden rounded-lg ring-1 ring-black/10" style={{ background: sl[key] }}>
+                            <input type="color" value={sl[key]} onChange={(e) => setSlide({ [key]: e.target.value })} className="absolute inset-0 cursor-pointer opacity-0" />
+                          </span>
+                          {key === "bg" ? "Background" : key === "ink" ? "Text" : "Accent"}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <Button
+                  variant="secondary"
+                  onClick={() =>
+                    set("hero", {
+                      ...hero,
+                      slides: [...(hero.slides ?? []), { id: `hs${Date.now()}`, productId: products.find((p) => p.type === "menu")?.id ?? "", bg: "#f4f2ee", ink: "#14110f", pop: "#e8432d" }],
+                    })
+                  }
+                >
+                  <Plus className="size-4" /> Add drink
+                </Button>
+                <label className="flex items-center gap-2 text-sm">
+                  Autoplay every
+                  <Input type="number" min={0} max={20} value={hero.autoplay ?? 5} onChange={(e) => set("hero", { ...hero, autoplay: Number(e.target.value) })} className="!w-20" />
+                  sec (0 = off)
+                </label>
+              </div>
             </div>
           </Card>
 

@@ -31,7 +31,7 @@ export default function LoginPage() {
         <img src={img(IMG.interiorBar, 1600)} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
         <div className="absolute bottom-12 left-12 right-12 text-white">
-          <p className="font-[family-name:var(--font-instrument)] text-5xl leading-[1.05]">
+          <p className="font-[family-name:var(--font-display-active)] text-5xl leading-[1.05]">
             Run the whole café <em>from one calm place.</em>
           </p>
           <p className="mt-4 max-w-md text-sm text-white/70">Orders, reservations, customers, menu and every word on the website — all managed here.</p>
@@ -46,7 +46,7 @@ export default function LoginPage() {
           transition={{ duration: 0.45 }}
           className="w-full max-w-sm"
         >
-          <div className="mb-8 grid size-14 place-items-center rounded-2xl bg-[var(--accent)] font-[family-name:var(--font-instrument)] text-3xl italic text-white shadow-lg">a</div>
+          <div className="mb-8 grid size-14 place-items-center rounded-2xl bg-[var(--accent)] font-[family-name:var(--font-display-active)] text-3xl text-white shadow-lg">a</div>
           <h1 className="text-3xl font-semibold tracking-tight">Sign in to Aura</h1>
           <p className="mt-1.5 text-sm text-[var(--a-muted)]">Admin console · CRM · CMS</p>
 

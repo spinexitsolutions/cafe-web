@@ -117,7 +117,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2.5 px-5 pb-4 pt-5">
-        <div className="grid size-9 place-items-center rounded-xl bg-[var(--accent)] font-[family-name:var(--font-instrument)] text-xl italic text-white">a</div>
+        <div className="grid size-9 place-items-center rounded-xl bg-[var(--accent)] font-[family-name:var(--font-display-active)] text-xl text-white">a</div>
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold">{name}</div>
           <div className="text-xs text-[var(--a-muted)]">Admin console</div>

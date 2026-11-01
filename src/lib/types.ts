@@ -266,7 +266,15 @@ export interface OpeningHour {
   closed: boolean;
 }
 
-export type DisplayFont = "instrument" | "fraunces" | "playfair";
+export type DisplayFont = "bricolage" | "funnel" | "unbounded";
+
+export interface HeroSlide {
+  id: ID;
+  productId: ID;
+  bg: string; // hero background while this drink is showing
+  ink: string; // text colour on that background
+  pop: string; // accent colour on that background
+}
 export type IntroStyle = "curtain" | "counter" | "minimal";
 
 export interface Settings {
@@ -319,6 +327,8 @@ export interface Settings {
     secondaryImage: string;
     ctaPrimary: { label: string; href: string };
     ctaSecondary: { label: string; href: string };
+    slides: HeroSlide[];
+    autoplay: number; // seconds per drink, 0 = off
   };
   story: {
     eyebrow: string;

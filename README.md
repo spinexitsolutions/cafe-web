@@ -1,6 +1,6 @@
 # Aura Coffee Atelier — café website + admin (CRM · CMS · shop)
 
-A demo café website built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, **Framer Motion**, **Lenis** smooth scrolling and **Zustand**. It's mobile-first, and the design follows Apple's clean style.
+A demo café website built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, **Framer Motion**, **Lenis** smooth scrolling and **Zustand**. It's mobile-first, and the design follows Apple's clean style. Typography is all sans-serif: Bricolage Grotesque for headlines and Funnel Sans for body text, with a "coffee cherry" red accent.
 
 ```bash
 npm install
@@ -11,6 +11,8 @@ npm run build && npm start
 **Admin:** `/admin`. Demo login: `admin@aura.cafe` / `aura123`.
 
 ## Storefront
+- **Hero:** "Coffee is a fruit." A drink switcher where the whole hero recolours for each drink (latte, matcha, iced latte, cold brew), with a large circular drink image, a price sticker you can tap to add the drink, mouse parallax and autoplay. The drinks, their colours and the autoplay timing are edited in the CMS.
+- **Page transitions:** an accent-colour wipe between pages.
 - **Intro animation:** curtain, counter or minimal style. The words, duration, on/off switch and once-per-session setting are all controlled from the admin.
 - **"Island" navbar:** a floating capsule that compacts while you scroll and expands into a full-screen menu with image previews. When you add something to the bag, it briefly turns into a live "Added to bag" notification.
 - **Home sections:**

@@ -35,7 +35,7 @@ export function Loyalty() {
             <div className="absolute -right-20 -top-20 size-64 rounded-full bg-accent/40 blur-3xl" />
             <div className="relative flex h-full flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="display text-3xl italic">aura</span>
+                <span className="display text-3xl">aura</span>
                 <span className="eyebrow text-bg/60">Member</span>
               </div>
               <div>

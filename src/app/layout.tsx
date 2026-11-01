@@ -1,14 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, Geist_Mono, Instrument_Serif, Playfair_Display } from "next/font/google";
+import { Bricolage_Grotesque, Funnel_Display, Funnel_Sans, Unbounded } from "next/font/google";
 import { Providers } from "@/components/providers/Providers";
 import { seedSettings } from "@/lib/seed";
 import "./globals.css";
 
-const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-instrument" });
-const fraunces = Fraunces({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-fraunces" });
-const playfair = Playfair_Display({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-playfair" });
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+const bricolage = Bricolage_Grotesque({ subsets: ["latin"], axes: ["wdth", "opsz"], variable: "--font-bricolage" });
+const funnelDisplay = Funnel_Display({ subsets: ["latin"], variable: "--font-funnel-display" });
+const unbounded = Unbounded({ subsets: ["latin"], variable: "--font-unbounded" });
+const funnelSans = Funnel_Sans({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
   title: { default: seedSettings.seo.title, template: `%s — ${seedSettings.site.name}` },
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f6f1ea",
+  themeColor: "#f4f2ee",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -27,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${instrument.variable} ${fraunces.variable} ${playfair.variable} ${geist.variable} ${geistMono.variable}`}
+      className={`${bricolage.variable} ${funnelDisplay.variable} ${unbounded.variable} ${funnelSans.variable}`}
       suppressHydrationWarning
     >
       <body>

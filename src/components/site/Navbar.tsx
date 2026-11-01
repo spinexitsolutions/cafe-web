@@ -26,7 +26,7 @@ const PREVIEWS: Record<string, string> = {
 
 export function Logo({ name, className }: { name: string; className?: string }) {
   return (
-    <span className={cn("display flex items-baseline text-[1.65rem] italic leading-none tracking-tight", className)}>
+    <span className={cn("display flex items-baseline text-[1.6rem] leading-none !tracking-[-0.06em]", className)}>
       {name}
       <span className="ml-0.5 inline-block size-1.5 rounded-full bg-accent" />
     </span>
@@ -143,11 +143,11 @@ export function Navbar() {
                             onClick={() => setExpanded(false)}
                             className="group flex items-baseline gap-4 py-2.5 sm:py-3"
                           >
-                            <span className="eyebrow w-6 text-white/40">{String(i + 1).padStart(2, "0")}</span>
+                            <span className="eyebrow plain w-6 text-white/40">{String(i + 1).padStart(2, "0")}</span>
                             <span
                               className={cn(
                                 "display text-[2.4rem] leading-none transition-all duration-500 sm:text-5xl",
-                                pathname === l.href ? "italic text-accent" : "group-hover:translate-x-2 group-hover:italic",
+                                pathname === l.href ? "text-accent" : "group-hover:translate-x-2 group-hover:text-accent",
                               )}
                             >
                               {l.label}

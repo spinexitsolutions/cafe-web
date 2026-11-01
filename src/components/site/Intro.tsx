@@ -59,7 +59,7 @@ export function Intro() {
       {phase !== "done" && (
         <motion.div
           key="intro"
-          className="fixed inset-0 z-[100] flex flex-col bg-ink text-bg"
+          className="fixed inset-0 z-[100] flex flex-col bg-accent text-white"
           exit={
             intro.style === "minimal"
               ? { opacity: 0, transition: { duration: 0.7 } }
@@ -70,18 +70,18 @@ export function Intro() {
           {phase === "playing" && intro.style !== "minimal" && (
             <>
               <div className="flex items-center justify-between px-5 pt-6 sm:px-10">
-                <span className="eyebrow opacity-60">{name} · coffee atelier</span>
-                <span className="eyebrow opacity-60">est. 2019</span>
+                <span className="eyebrow plain opacity-70">{name} · coffee atelier</span>
+                <span className="eyebrow plain opacity-70">est. 2019</span>
               </div>
               <div className="relative flex flex-1 items-center justify-center overflow-hidden px-5">
                 <AnimatePresence mode="popLayout">
                   <motion.h1
                     key={word}
-                    initial={{ y: "100%", opacity: 0, filter: "blur(8px)" }}
-                    animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
-                    exit={{ y: "-100%", opacity: 0, filter: "blur(8px)" }}
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: "0%", opacity: 1 }}
+                    exit={{ y: "-100%", opacity: 0 }}
                     transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                    className="display text-center text-[22vw] italic leading-none sm:text-[13vw]"
+                    className="display text-center text-[19vw] uppercase leading-none sm:text-[12vw]"
                   >
                     {words[word]}
                   </motion.h1>
@@ -89,16 +89,16 @@ export function Intro() {
               </div>
               <div className="px-5 pb-8 sm:px-10">
                 <div className="flex items-end justify-between">
-                  <span className="eyebrow max-w-[14rem] opacity-60">
+                  <span className="eyebrow plain max-w-[14rem] opacity-70">
                     {intro.style === "counter" ? "Brewing your experience" : "Slow coffee for fast cities"}
                   </span>
                   <span className="display text-6xl tabular-nums sm:text-8xl">
                     {count}
-                    <span className="text-accent">%</span>
+                    <span className="opacity-60">%</span>
                   </span>
                 </div>
-                <div className="mt-5 h-px w-full bg-bg/15">
-                  <div className="h-px bg-accent transition-[width] duration-100" style={{ width: `${count}%` }} />
+                <div className="mt-5 h-px w-full bg-white/25">
+                  <div className="h-px bg-white transition-[width] duration-100" style={{ width: `${count}%` }} />
                 </div>
               </div>
             </>
@@ -111,9 +111,9 @@ export function Intro() {
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                 className="text-center"
               >
-                <div className="display text-7xl italic sm:text-9xl">{name}</div>
-                <div className="mx-auto mt-6 h-px w-40 overflow-hidden bg-bg/15">
-                  <div className="h-px bg-accent" style={{ width: `${count}%` }} />
+                <div className="display text-7xl sm:text-9xl">{name}</div>
+                <div className="mx-auto mt-6 h-px w-40 overflow-hidden bg-white/25">
+                  <div className="h-px bg-white" style={{ width: `${count}%` }} />
                 </div>
               </motion.div>
             </div>

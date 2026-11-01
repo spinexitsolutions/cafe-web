@@ -19,7 +19,7 @@ function Card({ p, i, cur }: { p: Product; i: number; cur: string }) {
         <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/30" />
       </Link>
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-6">
-        <span className="display text-7xl italic text-white/90">{String(i + 1).padStart(2, "0")}</span>
+        <span className="display text-7xl text-white/90">{String(i + 1).padStart(2, "0")}</span>
         <span className="eyebrow rounded-full bg-white/15 px-3 py-1.5 text-white backdrop-blur">{p.tags.includes("seasonal") ? "Seasonal" : "Signature"}</span>
       </div>
       <div className="absolute inset-x-0 bottom-0 p-6 text-white">
@@ -96,7 +96,7 @@ export function Signature() {
               <Card key={p.id} p={p} i={i} cur={cur} />
             ))}
             <Link href="/menu" className="group flex h-[72vh] max-h-[640px] w-[320px] shrink-0 flex-col items-center justify-center rounded-card ring-1 ring-line transition hover:bg-ink hover:text-bg">
-              <span className="display text-5xl italic">See it all</span>
+              <span className="display text-5xl">See it all</span>
               <span className="mt-3 text-sm text-muted group-hover:text-bg/60">{products.filter((p) => p.type === "menu").length} items on the menu →</span>
             </Link>
           </motion.div>

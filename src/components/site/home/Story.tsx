@@ -8,10 +8,9 @@ import { ParallaxImg } from "../../motion/Parallax";
 import { Reveal } from "../../motion/Reveal";
 
 function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
-  const opacity = useTransform(progress, range, [0.12, 1]);
-  const blur = useTransform(progress, range, ["blur(3px)", "blur(0px)"]);
+  const opacity = useTransform(progress, range, [0.14, 1]);
   return (
-    <motion.span style={{ opacity, filter: blur }} className="mr-[0.25em] inline-block">
+    <motion.span style={{ opacity }} className="mr-[0.25em] inline-block">
       {children}
     </motion.span>
   );

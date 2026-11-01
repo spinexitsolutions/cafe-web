@@ -113,7 +113,7 @@ export function Footer() {
         </div>
       </div>
       <motion.div style={{ y }} aria-hidden className="pointer-events-none select-none px-3 pb-2">
-        <p className="display text-center text-[34vw] italic leading-[0.78] text-bg/[0.07]">{site.shortName}</p>
+        <p className="display text-center text-[34vw] leading-[0.78] text-bg/[0.07]">{site.shortName}</p>
       </motion.div>
     </footer>
   );

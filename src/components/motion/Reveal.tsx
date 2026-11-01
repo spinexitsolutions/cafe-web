@@ -15,10 +15,10 @@ export function Reveal({
   const Comp = motion[as] as typeof motion.div;
   return (
     <Comp
-      initial={{ opacity: 0, y, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-      transition={{ duration: 0.9, ease, delay }}
+      transition={{ duration: 1.1, ease, delay }}
       className={className}
       {...rest}
     >
@@ -51,7 +51,7 @@ export function SplitWords({
         <span key={i} className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-bottom" aria-hidden>
           <motion.span
             className="inline-block will-change-transform"
-            variants={{ hidden: { y: "110%", rotate: 4 }, show: { y: "0%", rotate: 0, transition: { duration: 1, ease } } }}
+            variants={{ hidden: { y: "108%" }, show: { y: "0%", transition: { duration: 1.1, ease } } }}
           >
             {w}
             {i < words.length - 1 ? " " : ""}

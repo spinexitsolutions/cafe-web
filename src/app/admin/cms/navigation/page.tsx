@@ -56,7 +56,7 @@ export default function NavigationPage() {
           </Card>
           <Card title="Preview">
             <div className="flex items-center justify-between rounded-full bg-[#1d1d1f] py-1.5 pl-4 pr-1.5 text-white">
-              <span className="font-[family-name:var(--font-display-active)] text-lg italic">aura</span>
+              <span className="font-[family-name:var(--font-display-active)] text-lg">aura</span>
               <span className="rounded-full bg-[var(--accent)] px-3 py-1.5 text-xs font-medium">{draft.ctaLabel}</span>
             </div>
             <div className="mt-3 space-y-1">
